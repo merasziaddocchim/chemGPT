@@ -1,6 +1,4 @@
-// /frontend/utils/api.ts
-
-export async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
+export async function fetcher(url, options = {}) {
   const response = await fetch(url, options);
   if (!response.ok) {
     const errorText = await response.text();
