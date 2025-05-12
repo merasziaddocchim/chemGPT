@@ -18,9 +18,12 @@ export default function ChatPage() {
         body: JSON.stringify({ question: message }),
       })
       const data = await res.json()
-      const botMessage = { role: 'bot', content: data.answer || data.message || "No response." }
+      console.log('🔍 Backend raw response:', data)
+
+      const botMessage = { role: 'bot', content: data.answer || data.message || "⚠️ No response." }
       setResponses(prev => [...prev, botMessage])
     } catch (err) {
+      console.error('❌ Error from backend:', err)
       setResponses(prev => [...prev, { role: 'bot', content: "❌ Error reaching the backend." }])
     }
   }
