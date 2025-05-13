@@ -1,9 +1,8 @@
-// frontend/components/Message.js
 export default function Message({ role, content }) {
-  const isUser = role === 'user';
-
   return (
-    <div className={`my-4 p-4 rounded-lg ${isUser ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'}`}>
+    <div className={`my-4 px-4 py-3 rounded-lg max-w-3xl mx-auto shadow-sm ${
+      role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left prose prose-slate'
+    }`}>
       <div dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
