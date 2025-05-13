@@ -37,7 +37,10 @@ export default function ChatInterface() {
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto space-y-2 mb-2">
         {responses.map((msg, i) => (
-          <div key={i} className={\`p-3 max-w-xl rounded-lg \${msg.role === 'user' ? 'bg-blue-100 self-end text-right' : 'bg-green-100 self-start text-left'}\`}>
+          <div key={i} className={`p-3 max-w-xl rounded-lg ${
+  msg.role === 'user' ? 'bg-blue-100 self-end text-right' : 'bg-green-100 self-start text-left'
+}`}>
+
             {msg.content}
           </div>
         ))}
