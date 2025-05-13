@@ -17,6 +17,25 @@ export default function ChatInterface({ initialQuery = '' }) {
     }
   }, [initialQuery])
 
+  useEffect(() => {
+    if (responses.length > 0) {
+      const last = responses[responses.length - 1]
+      if (last.role === 'user') {
+        document.title = `${last.content.slice(0, 40)} - ChemGPT`
+      } else if (last.role === 'bot') {
+        const summary = last.content.split(/[.?!]/)[0].slice(0, 50)
+        document.title = `${summary} - ChemGPT`
+      }
+    }
+  }, [responses])
+
+  useEffect(() => {
+    const originalTitle = document.title
+    return () => {
+      document.title = originalTitle
+    }
+  }, [])
+
   const sendMessage = async (msgToSend = message) => {
     if (!msgToSend.trim()) return
     const userMessage = { role: 'user', content: msgToSend }
