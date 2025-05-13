@@ -1,44 +1,48 @@
-import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
-import MessageList from "./MessageList"
-import ChatInput from "./ChatInput"
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import MessageList from './MessageList';
+import ChatInput from './ChatInput';
 
-export default function ChatInterface() {
-  const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState([])
-  const router = useRouter()
+export default function ChatInterface({ initialQuery = '' }) {
+  const [messages, setMessages] = useState([]);
+  const router = useRouter();
 
-  const sendMessage = async () => {
-    if (!message.trim()) return
-    const userMsg = { role: "user", content: message }
-    setMessages(prev => [...prev, userMsg])
-    setMessage("")
+  const sendMessage = async (question) => {
+    if (!question.trim()) return;
+    const userMessage = { role: 'user', content: question };
+    setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const res = await fetch("https://chemgpt-pro.onrender.com/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: message })
-      })
+      const res = await fetch('https://chemgpt-pro.onrender.com/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
 
-      const data = await res.json()
-      setMessages(prev => [...prev, { role: "bot", content: data.answer || "⚠️ No response." }])
-    } catch (err) {
-      setMessages(prev => [...prev, { role: "bot", content: "❌ Error reaching the backend." }])
+      const data = await res.json();
+      const botMessage = { role: 'bot', content: data.answer };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      const errorMsg = { role: 'bot', content: '❌ An error occurred while contacting the backend.' };
+      setMessages((prev) => [...prev, errorMsg]);
     }
-  }
+  };
 
   useEffect(() => {
-    if (router.query.question) {
-      setMessage(router.query.question)
-      sendMessage()
-    }
-  }, [router.query.question])
+    if (initialQuery) sendMessage(initialQuery);
+  }, [initialQuery]);
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      <MessageList messages={messages} />
-      <ChatInput message={message} setMessage={setMessage} handleSend={sendMessage} />
+    <div className="flex flex-col h-screen">
+      <main className="flex-1 overflow-y-auto px-4 py-6">
+        <MessageList messages={messages} />
+      </main>
+      <footer className="border-t bg-white px-4 py-3">
+        <ChatInput onSend={sendMessage} />
+        <p className="text-center text-xs text-gray-500 mt-2">
+          Built by MERAS ZIAD · <a href="/" className="underline">chemgpt.app</a>
+        </p>
+      </footer>
     </div>
-  )
+  );
 }
