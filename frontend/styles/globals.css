@@ -3,5 +3,9 @@
 @tailwind utilities;
 
 body {
-  @apply bg-white text-gray-800 leading-relaxed;
+  @apply bg-white text-gray-800;
+}
+
+.prose {
+  max-width: none;
 }
