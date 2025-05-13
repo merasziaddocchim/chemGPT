@@ -5,6 +5,7 @@ from openai import OpenAI
 
 app = FastAPI()
 
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,6 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.get("/")
@@ -26,18 +28,17 @@ async def ask_question(req: Request):
     if not question:
         return {"answer": "⚠️ No question provided."}
 
-    system_prompt = """
-You are ChemGPT, an advanced AI chemistry tutor designed to help students, researchers, and professionals understand organic chemistry reactions, retrosynthesis, and spectroscopy.
-
-When a user asks about a chemical reaction (e.g., Wittig, SN1, E2), you must:
-- Give a brief definition
-- List detailed step-by-step mechanism
-- Show important intermediates (if relevant)
-- Explain electron flow in each step using clear text
-- Format the answer using **Markdown**
-
-Always aim to be educational, structured, and concise. Never leave vague or incomplete answers. Your responses should guide users like a real chemistry teacher.
-"""
+    system_prompt = (
+        "You are ChemGPT, an expert chemistry tutor. "
+        "Always explain chemistry questions clearly and in steps. "
+        "Use bullet points, numbered lists, or headers when needed. "
+        "Avoid dense text blocks. Keep formatting clean and easy to read. "
+        "If the user asks about a chemical reaction, always include:\n"
+        "- Step-by-step mechanism\n"
+        "- Key intermediates and transition states\n"
+        "- Any important notes for students\n\n"
+        "Respond like a human tutor who really wants the student to understand."
+    )
 
     response = client.chat.completions.create(
         model="gpt-4",
@@ -46,5 +47,6 @@ Always aim to be educational, structured, and concise. Never leave vague or inco
             {"role": "user", "content": question}
         ]
     )
+
     answer = response.choices[0].message.content
     return {"answer": answer}
