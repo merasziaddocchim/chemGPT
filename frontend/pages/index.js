@@ -1,6 +1,18 @@
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import Link from 'next/link'
 
 export default function HomePage() {
+  const [query, setQuery] = useState('')
+  const router = useRouter()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (query.trim()) {
+      router.push(`/chat?question=${encodeURIComponent(query)}`)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-black text-white">
       {/* Navbar */}
@@ -24,18 +36,19 @@ export default function HomePage() {
         </p>
 
         {/* Ask Bar */}
-        <form action="/chat" className="w-full max-w-xl">
+        <form onSubmit={handleSubmit} className="w-full max-w-xl">
           <input
             type="text"
             placeholder="Ask ChemGPT about reactions, molecules, spectra..."
             className="w-full p-4 rounded-xl bg-white text-black shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
         </form>
       </main>
 
-      {/* Footer */}
       <footer className="text-center text-xs text-white/40 py-6 border-t border-white/10">
-        Built by a MERAS ZIAD · chemgpt.app
+        Built MERAS ZIAD · chemgpt.app
       </footer>
     </div>
   )
