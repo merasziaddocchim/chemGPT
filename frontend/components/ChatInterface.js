@@ -1,58 +1,49 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import MessageList from './MessageList'
 
 export default function ChatInterface({ initialQuery = '' }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
-    if (initialQuery) handleAsk(initialQuery)
+    if (initialQuery) {
+      handleSubmit(initialQuery)
+    }
   }, [initialQuery])
 
-  const handleAsk = async (question) => {
+  const handleSubmit = async (customInput) => {
+    const question = customInput || input
+    if (!question.trim()) return
+
     setMessages(prev => [...prev, { role: 'user', content: question }])
+    setInput('')
 
     const res = await fetch('https://chemgpt-pro.onrender.com/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ question })
     })
     const data = await res.json()
-
     setMessages(prev => [...prev, { role: 'user', content: question }, { role: 'bot', content: data.answer }])
   }
 
-  const handleSubmit = async () => {
-    if (!input.trim()) return
-    await handleAsk(input.trim())
-    setInput('')
-  }
-
   return (
-    <div className="flex flex-col flex-1 p-6 overflow-hidden">
-      <div className="flex-1 overflow-y-auto space-y-4">
-        {messages.map((msg, i) => (
-          <div key={i} className={`p-4 rounded-md ${msg.role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-100 text-left'}`}>
-            <div dangerouslySetInnerHTML={{ __html: msg.content }} />
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 flex gap-2 border-t pt-4">
+    <div className="flex flex-col h-screen">
+      <MessageList messages={messages} />
+      <footer className="px-6 py-4 border-t flex items-center space-x-2">
         <input
-          type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
           placeholder="Ask ChemGPT something..."
-          className="flex-1 px-4 py-2 border rounded shadow-sm"
+          className="flex-1 border border-gray-300 rounded px-4 py-2"
         />
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
+        <button onClick={() => handleSubmit()} className="bg-blue-600 text-white px-4 py-2 rounded">
           Send
         </button>
-      </div>
+      </footer>
     </div>
   )
 }
