@@ -1,20 +1,21 @@
-export default function ChatInput({ message, setMessage, handleSend }) {
+// frontend/components/ChatInput.js
+export default function ChatInput({ input, setInput, onSubmit }) {
   return (
-    <div className="w-full border-t px-4 py-3 flex items-center gap-2">
+    <div className="flex border-t p-4">
       <input
-        className="flex-1 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
         type="text"
+        className="flex-grow px-4 py-2 border rounded-l-lg focus:outline-none"
         placeholder="Ask ChemGPT something..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && onSubmit()}
       />
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-        onClick={handleSend}
+        onClick={onSubmit}
+        className="bg-blue-600 text-white px-4 py-2 rounded-r-lg"
       >
         Send
       </button>
     </div>
-  )
+  );
 }
