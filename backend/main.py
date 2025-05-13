@@ -1,15 +1,15 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import openai
 import os
+from openai import OpenAI
 
-# ⛔️ Optional: Uncomment these when aizynth or spectroscopy modules are installed
+# Optional future imports
 # from aizynth import predict_route
 # from spectroscopy import get_spectrum
 
 app = FastAPI()
 
-# Enable CORS for frontend access
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,15 +17,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load OpenAI key from environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Set up OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Health check route
 @app.get("/")
 def read_root():
     return {"message": "ChemGPT Backend is alive!"}
 
-# Flexible chat endpoint
 @app.post("/ask")
 async def ask_question(req: Request):
     body = await req.json()
@@ -34,17 +32,9 @@ async def ask_question(req: Request):
     if not question:
         return {"answer": "⚠️ No question provided."}
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": question}]
     )
-    return {"answer": response["choices"][0]["message"]["content"]}
-
-# Optional: Uncomment when needed
-# @app.post("/retrosynthesis")
-# def retrosynthesis(data: Molecule):
-#     return predict_route(data.smiles)
-
-# @app.get("/spectrum/{compound}")
-# def spectrum(compound: str):
-#     return get_spectrum(compound)
+    answer = response.choices[0].message.content
+    return {"answer": answer}
