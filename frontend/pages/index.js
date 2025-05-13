@@ -1,55 +1,81 @@
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import Link from 'next/link'
+
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function HomePage() {
-  const [query, setQuery] = useState('')
-  const router = useRouter()
+  const router = useRouter();
+  const [query, setQuery] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleAsk = () => {
     if (query.trim()) {
-      router.push(`/chat?question=${encodeURIComponent(query)}`)
+      router.push(`/chat?question=${encodeURIComponent(query)}`);
     }
-  }
+  };
+
+  const examples = [
+    {
+      question: "What is the structure of aspirin?",
+      answer:
+        "Aspirin, also known as acetylsalicylic acid, has the formula C9H8O4. It contains a benzene ring with a carboxylic acid and an ester group attached.",
+    },
+    {
+      question: "Predict the IR spectrum of ethanol",
+      answer:
+        "Strong O-H stretch around 3300 cm⁻¹, C-H stretch near 2900 cm⁻¹, and C-O stretch near 1050 cm⁻¹.",
+    },
+    {
+      question: "Give retrosynthesis of paracetamol",
+      answer:
+        "Break down to p-aminophenol and acetic anhydride. One-step acetylation gives paracetamol.",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-black text-white">
-      {/* Navbar */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-        <h1 className="text-2xl font-bold tracking-tight text-cyan-400">ChemGPT</h1>
-        <nav className="space-x-6 text-sm">
-          <Link href="/chat" className="hover:text-cyan-400">Chat</Link>
-          <Link href="/molecule" className="hover:text-cyan-400">Molecule</Link>
-          <Link href="/retro" className="hover:text-cyan-400">Retro</Link>
-          <Link href="/spectro" className="hover:text-cyan-400">Spectro</Link>
-        </nav>
-      </header>
-
-      {/* Hero Section */}
-      <main className="flex flex-col items-center justify-center text-center px-4 py-24">
-        <h2 className="text-4xl sm:text-5xl font-extrabold mb-6">
-          Unlock Chemistry Intelligence with <span className="text-cyan-400">AI</span>
-        </h2>
-        <p className="max-w-xl text-base sm:text-lg text-white/80 mb-10">
-          ChemGPT empowers researchers, students, and chemists with cutting-edge tools for retrosynthesis, molecular visualization, and spectroscopy — all in one AI-driven platform.
+    <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
+      <div className="max-w-3xl mx-auto text-center mt-20">
+        <h1 className="text-4xl font-bold mb-4">Welcome to ChemGPT ⚗️</h1>
+        <p className="text-lg text-gray-700 mb-6">
+          Ask anything about chemistry — molecules, reactions, spectra, and more.
         </p>
-
-        {/* Ask Bar */}
-        <form onSubmit={handleSubmit} className="w-full max-w-xl">
+        <div className="flex justify-center gap-2">
           <input
             type="text"
-            placeholder="Ask ChemGPT about reactions, molecules, spectra..."
-            className="w-full p-4 rounded-xl bg-white text-black shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+            placeholder="Try: What is the structure of caffeine?"
+            className="w-full max-w-xl px-4 py-2 border rounded-lg shadow-sm"
           />
-        </form>
-      </main>
+          <button
+            onClick={handleAsk}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Ask
+          </button>
+        </div>
+      </div>
 
-      <footer className="text-center text-xs text-white/40 py-6 border-t border-white/10">
-        Built MERAS ZIAD · chemgpt.app
-      </footer>
+      <section className="mt-16 max-w-4xl mx-auto">
+        <h2 className="text-xl font-semibold mb-4">🔍 Example Questions</h2>
+        <ul className="space-y-4">
+          {examples.map((item, i) => (
+            <li
+              key={i}
+              className="p-4 bg-white rounded-xl shadow hover:bg-blue-50 transition"
+            >
+              <p
+                className="text-blue-600 font-medium cursor-pointer hover:underline"
+                onClick={() =>
+                  router.push(`/chat?question=${encodeURIComponent(item.question)}`)
+                }
+              >
+                {item.question}
+              </p>
+              <p className="text-gray-700 mt-2 text-sm">{item.answer}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
-  )
+  );
 }
