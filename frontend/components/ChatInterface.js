@@ -22,6 +22,10 @@ export default function ChatInterface({ initialQuery = '' }) {
       const last = responses[responses.length - 1]
       if (last.role === 'user') {
         document.title = `${last.content.slice(0, 40)} - ChemGPT`
+        const query = encodeURIComponent(last.content.trim())
+        const url = new URL(window.location.href)
+        url.searchParams.set('question', query)
+        window.history.replaceState({}, '', url.toString())
       } else if (last.role === 'bot') {
         const summary = last.content.split(/[.?!]/)[0].slice(0, 50)
         document.title = `${summary} - ChemGPT`
@@ -61,6 +65,19 @@ export default function ChatInterface({ initialQuery = '' }) {
 
   return (
     <div className="flex flex-col h-full">
+      {responses.length > 0 && responses.some(r => r.role === 'bot') && (
+        <div className="flex justify-end mb-2 pr-2">
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href)
+              alert("🔗 Link copied to clipboard!")
+            }}
+            className="text-sm text-blue-600 underline hover:text-blue-800 transition"
+          >
+            🔗 Copy link to this question
+          </button>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto space-y-2 mb-2">
         {responses.map((msg, i) => (
           <div key={i} className={`p-3 max-w-xl rounded-lg ${
