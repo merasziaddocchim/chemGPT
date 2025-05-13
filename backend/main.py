@@ -1,12 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from openai import OpenAI
 import os
+from openai import OpenAI
 
 app = FastAPI()
 
-# Allow frontend access via CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,49 +12,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Set up OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# Pydantic model for incoming question
-class QuestionRequest(BaseModel):
-    question: str
 
 @app.get("/")
 def read_root():
     return {"message": "ChemGPT Backend is alive!"}
 
 @app.post("/ask")
-async def ask_question(payload: QuestionRequest):
-    try:
-        if not payload.question:
-            return {"answer": "⚠️ No question provided."}
+async def ask_question(req: Request):
+    body = await req.json()
+    question = body.get("question", "")
 
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are ChemGPT, an expert chemistry tutor. "
-                        "When answering questions, always use a clear, structured, and educational tone. "
-                        "Explain reactions like Wittig, SN1, Diels-Alder using:
-"
-                        "- What the reaction does
-"
-                        "- Reagents and conditions
-"
-                        "- Step-by-step mechanism
-"
-                        "- Final product and notes
-"
-                        "Your tone should be informative and helpful for students and researchers. Avoid short or vague answers."
-                    )
-                },
-                {"role": "user", "content": payload.question}
-            ]
-        )
+    if not question:
+        return {"answer": "⚠️ No question provided."}
 
-        return {"answer": response.choices[0].message.content}
+    system_prompt = """
+You are ChemGPT, an advanced AI chemistry tutor designed to help students, researchers, and professionals understand organic chemistry reactions, retrosynthesis, and spectroscopy.
 
-    except Exception as e:
-        return {"error": f"❌ Error from backend: {str(e)}"}
+When a user asks about a chemical reaction (e.g., Wittig, SN1, E2), you must:
+- Give a brief definition
+- List detailed step-by-step mechanism
+- Show important intermediates (if relevant)
+- Explain electron flow in each step using clear text
+- Format the answer using **Markdown**
+
+Always aim to be educational, structured, and concise. Never leave vague or incomplete answers. Your responses should guide users like a real chemistry teacher.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question}
+        ]
+    )
+    answer = response.choices[0].message.content
+    return {"answer": answer}
