@@ -1,16 +1,26 @@
 export default function Layout({ children }) {
   return (
-    <div className="h-screen flex flex-col md:flex-row bg-white text-gray-900">
-      <div className="md:w-64 w-full md:h-full h-16 bg-blue-900 text-white flex md:flex-col justify-between md:justify-start items-center p-4">
-        <h1 className="text-xl font-bold mb-4 hidden md:block">ChemGPT</h1>
-        <nav className="flex md:flex-col gap-2">
-          <a href="/chat" className="hover:bg-blue-800 px-3 py-1 rounded">🧠 Chat</a>
-          <a href="/molecule" className="hover:bg-blue-800 px-3 py-1 rounded">🧬 Molecule</a>
-          <a href="/retrosynthesis" className="hover:bg-blue-800 px-3 py-1 rounded">🔁 Retro</a>
-          <a href="/spectroscopy" className="hover:bg-blue-800 px-3 py-1 rounded">📊 Spectro</a>
-        </nav>
-      </div>
-      <main className="flex-1 p-4 overflow-y-auto">{children}</main>
+    <div className="flex h-screen bg-gray-50 text-gray-900">
+      {/* Sidebar */}
+      <aside className="w-60 bg-gray-900 text-white flex flex-col justify-between">
+        <div>
+          <a href="/" className="text-2xl font-semibold px-6 py-4 block">ChemGPT</a>
+          <nav className="flex flex-col gap-4 px-6 mt-6 text-sm">
+            <a href="/chat" className="hover:text-blue-300">🧠 Chat</a>
+            <a href="/molecule" className="hover:text-blue-300">🧪 Molecule</a>
+            <a href="/retro" className="hover:text-blue-300">🔁 Retro</a>
+            <a href="/spectro" className="hover:text-blue-300">📊 Spectro</a>
+          </nav>
+        </div>
+        <footer className="px-6 py-4 text-xs text-gray-400">
+          Built by MERAS ZIAD · chemgpt.app
+        </footer>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {children}
+      </main>
     </div>
   )
 }
