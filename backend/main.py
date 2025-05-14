@@ -20,10 +20,11 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def read_root():
     return {"message": "ChemGPT Backend is alive!"}
 
-@app.post("/ask")
-async def ask_question(req: Request):
+@app.post("/chat")
+async def chat(req: Request):
     body = await req.json()
     question = body.get("question", "")
+
 
     if not question:
         return {"answer": "⚠️ No question provided."}
