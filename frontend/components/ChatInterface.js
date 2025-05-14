@@ -62,6 +62,7 @@ export default function ChatInterface({ initialQuery = '' }) {
   }
 };
 
+console.log("Messages being rendered:", messages);
 
   return (
     <div className="flex flex-col h-screen">
