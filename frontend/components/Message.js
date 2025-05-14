@@ -6,24 +6,32 @@ import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 
 export default function Message({ role, content }) {
-  if (typeof content !== 'string') {
-    console.warn('⚠️ Invalid message content type:', typeof content, content)
-    return (
-      <div className="my-4 p-4 rounded-lg max-w-3xl mx-auto shadow-sm bg-red-100 text-left">
-        ⚠️ Unable to display this message.
-      </div>
-    )
+  // Absolute safety: Always render as string
+  let safeContent = ''
+  try {
+    if (typeof content === 'string') {
+      safeContent = content
+    } else if (content && typeof content === 'object') {
+      // If backend returns { answer: "text" }
+      if ('answer' in content) {
+        safeContent = content.answer
+      } else {
+        safeContent = JSON.stringify(content, null, 2)
+      }
+    } else {
+      safeContent = String(content)
+    }
+  } catch {
+    safeContent = '⚠️ Error displaying message content.'
   }
 
   return (
-    <div className={`my-4 p-4 rounded-lg max-w-3xl mx-auto shadow-sm ${role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'}`}>
+    <div className={`p-4 rounded-md my-2 ${role === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
       <ReactMarkdown
+        children={safeContent}
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
-        className="prose"
-      >
-        {content}
-      </ReactMarkdown>
+      />
     </div>
   )
 }
