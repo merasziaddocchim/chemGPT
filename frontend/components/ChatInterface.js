@@ -14,20 +14,54 @@ export default function ChatInterface({ initialQuery = '' }) {
   }, [initialQuery])
 
   const handleSubmit = async (customInput) => {
-    const question = customInput || input
-    if (!question.trim()) return
+  const question = customInput || input;
+  if (!question.trim()) return;
 
-    setMessages(prev => [...prev, { role: 'user', content: question }])
-    setInput('')
+  const userMessage = { role: 'user', content: question };
+  setMessages(prevMessages => [...prevMessages, userMessage]);
+  setInput('');
 
+  try {
     const res = await fetch('https://chemgpt-pro.onrender.com/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question })
-    })
-    const data = await res.json()
-    setMessages(prev => [...prev, { role: 'user', content: question }, { role: 'bot', content: data.answer }])
+    });
+
+    if (!res.ok) {
+      console.error("API Error:", res.status, await res.text());
+      const errorMessage = {
+        role: 'bot',
+        content: `Server error (code: ${res.status}). Please try again.`
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+
+    const data = await res.json();
+    console.log('API response:', data);
+    console.log('Answer:', data.answer);
+
+    if (data && typeof data.answer === 'string') {
+      const botMessage = { role: 'bot', content: data.answer };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+    } else {
+      console.error("Invalid response format:", data);
+      setMessages(prev => [...prev, {
+        role: 'bot',
+        content: "The server response is invalid or missing expected content."
+      }]);
+    }
+
+  } catch (error) {
+    console.error("Submit error:", error);
+    setMessages(prev => [...prev, {
+      role: 'bot',
+      content: "Connection error. Please check your internet and try again."
+    }]);
   }
+};
+
 
   return (
     <div className="flex flex-col h-screen">
