@@ -17,11 +17,14 @@ export default function Message({ role, content }) {
         role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'
       }`}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
-        className="prose prose-sm sm:prose-base lg:prose-lg"
-      >
+
+          <ReactMarkdown
+  remarkPlugins={[remarkGfm, remarkMath]}
+  rehypePlugins={[rehypeKatex]}
+>
+  {content}
+</ReactMarkdown>
+
         {content}
       </ReactMarkdown>
     </div>
