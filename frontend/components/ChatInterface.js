@@ -14,55 +14,49 @@ export default function ChatInterface({ initialQuery = '' }) {
   }, [initialQuery])
 
   const handleSubmit = async (customInput) => {
-  const question = customInput || input;
-  if (!question.trim()) return;
+    const question = customInput || input
+    if (!question.trim()) return
 
-  const userMessage = { role: 'user', content: question };
-  setMessages(prevMessages => [...prevMessages, userMessage]);
-  setInput('');
+    const userMessage = { role: 'user', content: question }
+    setMessages(prev => [...prev, userMessage])
+    setInput('')
 
-  try {
-    const res = await fetch('https://chemgpt-pro.onrender.com/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question })
-    });
+    try {
+      const res = await fetch('https://chemgpt-pro.onrender.com/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      })
 
-    if (!res.ok) {
-      console.error("API Error:", res.status, await res.text());
-      const errorMessage = {
-        role: 'bot',
-        content: `Server error (code: ${res.status}). Please try again.`
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
-    }
+      if (!res.ok) {
+        console.error('API Error:', res.status, await res.text())
+        const errorMessage = {
+          role: 'bot',
+          content: `Server error (code: ${res.status}). Please try again.`
+        }
+        setMessages(prev => [...prev, errorMessage])
+        return
+      }
 
-    const data = await res.json();
-    console.log('API response:', data);
-    console.log('Answer:', data.answer);
+      const data = await res.json()
+      console.log('API response:', data)
 
-    if (data && typeof data.answer === 'string') {
-      const botMessage = { role: 'bot', content: data.answer };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    } else {
-      console.error("Invalid response format:", data);
+      if (data && typeof data.answer === 'string') {
+        setMessages(prev => [...prev, { role: 'bot', content: data.answer }])
+      } else {
+        setMessages(prev => [...prev, {
+          role: 'bot',
+          content: 'Invalid response from the server.'
+        }])
+      }
+    } catch (error) {
+      console.error('Submission error:', error)
       setMessages(prev => [...prev, {
         role: 'bot',
-        content: "The server response is invalid or missing expected content."
-      }]);
+        content: 'Network error. Please check your connection and try again.'
+      }])
     }
-
-  } catch (error) {
-    console.error("Submit error:", error);
-    setMessages(prev => [...prev, {
-      role: 'bot',
-      content: "Connection error. Please check your internet and try again."
-    }]);
   }
-};
-
-console.log("Messages being rendered:", messages);
 
   return (
     <div className="flex flex-col h-screen">
@@ -72,16 +66,18 @@ console.log("Messages being rendered:", messages);
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleSubmit();
-  }
-}}
-
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              handleSubmit()
+            }
+          }}
           placeholder="Ask ChemGPT something..."
           className="flex-1 border border-gray-300 rounded px-4 py-2"
         />
-        <button onClick={() => handleSubmit()} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={() => handleSubmit()}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
           Send
         </button>
       </footer>
