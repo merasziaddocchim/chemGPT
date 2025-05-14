@@ -71,7 +71,13 @@ console.log("Messages being rendered:", messages);
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+          onKeyDown={(e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    handleSubmit();
+  }
+}}
+
           placeholder="Ask ChemGPT something..."
           className="flex-1 border border-gray-300 rounded px-4 py-2"
         />
