@@ -6,13 +6,13 @@ import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 
 export default function Message({ role, content }) {
-  // Absolute safety: Always render as string
+  // Bulletproof: handle object, string, or anything else
   let safeContent = ''
   try {
     if (typeof content === 'string') {
       safeContent = content
     } else if (content && typeof content === 'object') {
-      // If backend returns { answer: "text" }
+      // If object has 'answer' key from backend, use it
       if ('answer' in content) {
         safeContent = content.answer
       } else {
