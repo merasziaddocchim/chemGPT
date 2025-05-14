@@ -12,19 +12,11 @@ export default function Message({ role, content }) {
   }
 
   return (
-    <div
-      className={`my-4 p-4 rounded-lg max-w-3xl mx-auto shadow-sm ${
-        role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'
-      }`}
-    >
-
-          <ReactMarkdown
-  remarkPlugins={[remarkGfm, remarkMath]}
-  rehypePlugins={[rehypeKatex]}
->
-  {content}
-</ReactMarkdown>
-
+    <div className={`my-4 p-4 rounded-lg max-w-3xl mx-auto shadow-sm ${role === 'user' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'}`}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+      >
         {content}
       </ReactMarkdown>
     </div>
