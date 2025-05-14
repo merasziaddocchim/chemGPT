@@ -6,19 +6,19 @@ import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 
 export default function Message({ role, content }) {
-  // Safe string conversion to avoid React crashing on objects
   let safeContent = ''
 
   try {
     if (typeof content === 'string') {
       safeContent = content
-    } else if (typeof content === 'object') {
+    } else if (content && typeof content === 'object') {
       safeContent = JSON.stringify(content, null, 2)
-    } else if (content !== undefined && content !== null) {
-      safeContent = String(content)
+    } else {
+      safeContent = String(content ?? '')
     }
-  } catch (e) {
-    safeContent = '[Error rendering message content]'
+  } catch (err) {
+    console.error('❌ Error rendering content:', err)
+    safeContent = '[Unrenderable message]'
   }
 
   return (
@@ -29,7 +29,7 @@ export default function Message({ role, content }) {
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
       >
-        {safeContent}
+        {`${safeContent}`} {/* force string */}
       </ReactMarkdown>
     </div>
   )
