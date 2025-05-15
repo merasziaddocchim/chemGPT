@@ -3,15 +3,26 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from openai import OpenAI
 
+# 👇 NEW: import your user system
+from .database import engine
+from . import models
+from .auth import router as auth_router
+
 app = FastAPI()
 
-# Enable CORS
+# Enable CORS (adjust for production!)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Use your frontend domain in prod
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 👇 NEW: Create all tables (users, etc.)
+models.Base.metadata.create_all(bind=engine)
+
+# 👇 NEW: Add all /register, /login, /verify-email endpoints!
+app.include_router(auth_router)
 
 def get_openai_client():
     api_key = os.getenv("OPENAI_API_KEY")
@@ -43,7 +54,6 @@ async def chat(req: Request):
         "Respond like a human tutor who really wants the student to understand."
     )
 
-    # Create OpenAI client *here*, only when actually needed
     client = get_openai_client()
 
     response = client.chat.completions.create(
