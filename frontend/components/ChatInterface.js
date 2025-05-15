@@ -7,9 +7,9 @@ export default function ChatInterface({ initialQuery = '' }) {
   const [input, setInput] = useState('')
   const router = useRouter()
 
-  // FIX: Memoize handleSubmit to prevent infinite useEffect calls
+  // Memoize handleSubmit with no dependencies so it's stable (does not change)
   const handleSubmit = useCallback(async (customInput) => {
-    const question = customInput || input
+    const question = typeof customInput === "string" ? customInput : input
     if (!question.trim()) return
 
     const userMessage = { role: 'user', content: question }
@@ -51,13 +51,16 @@ export default function ChatInterface({ initialQuery = '' }) {
         content: 'Network error. Please check your connection and try again.'
       }])
     }
-  }, [input])
+  // Don't add input as a dependency!
+  }, [])
 
   useEffect(() => {
     if (initialQuery) {
       handleSubmit(initialQuery)
     }
-  }, [initialQuery, handleSubmit])
+    // Only run this when initialQuery changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery])
 
   return (
     <div className="flex flex-col h-screen">
