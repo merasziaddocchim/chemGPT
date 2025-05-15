@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import MessageList from './MessageList'
 
@@ -7,8 +7,8 @@ export default function ChatInterface({ initialQuery = '' }) {
   const [input, setInput] = useState('')
   const router = useRouter()
 
-  // 1. Move handleSubmit above useEffect
-  const handleSubmit = async (customInput) => {
+  // FIX: Memoize handleSubmit to prevent infinite useEffect calls
+  const handleSubmit = useCallback(async (customInput) => {
     const question = customInput || input
     if (!question.trim()) return
 
@@ -51,9 +51,8 @@ export default function ChatInterface({ initialQuery = '' }) {
         content: 'Network error. Please check your connection and try again.'
       }])
     }
-  }
+  }, [input])
 
-  // 2. Add handleSubmit to the useEffect dependency array
   useEffect(() => {
     if (initialQuery) {
       handleSubmit(initialQuery)
