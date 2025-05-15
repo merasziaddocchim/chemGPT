@@ -13,8 +13,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+def get_openai_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set")
+    return OpenAI(api_key=api_key)
 
 @app.get("/")
 def read_root():
@@ -24,7 +27,6 @@ def read_root():
 async def chat(req: Request):
     body = await req.json()
     question = body.get("question", "")
-
 
     if not question:
         return {"answer": "⚠️ No question provided."}
@@ -40,6 +42,9 @@ async def chat(req: Request):
         "- Any important notes for students\n\n"
         "Respond like a human tutor who really wants the student to understand."
     )
+
+    # Create OpenAI client *here*, only when actually needed
+    client = get_openai_client()
 
     response = client.chat.completions.create(
         model="gpt-4",
