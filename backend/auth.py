@@ -1,73 +1,68 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Request
-from sqlalchemy.orm import Session
-from . import models, schemas, utils
-from .database import SessionLocal
-import uuid
-import re
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+import os
+from openai import OpenAI
 
-router = APIRouter()
+# 👇 NEW IMPORTS for user system!
+from .database import engine
+from . import models
+from .auth import router as auth_router
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app = FastAPI()
 
-def password_complexity(password: str) -> bool:
-    # At least 8 chars, 1 upper, 1 lower, 1 digit, 1 special char
-    if (len(password) < 8 or
-        not re.search(r'[A-Z]', password) or
-        not re.search(r'[a-z]', password) or
-        not re.search(r'[0-9]', password) or
-        not re.search(r'[\W_]', password)):
-        return False
-    return True
+# Enable CORS (change to only allow your frontend domain later for security)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ["https://www.chemgpt.app"] in production!
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@router.post("/register", response_model=schemas.ShowUser)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    if not user.accept_terms:
-        raise HTTPException(status_code=400, detail="You must accept Terms and Privacy Policy.")
-    if not password_complexity(user.password):
-        raise HTTPException(
-            status_code=400, 
-            detail="Password must be at least 8 characters and include upper, lower, digit, special character."
-        )
-    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered.")
-    hashed_password = utils.hash_password(user.password)
-    token = str(uuid.uuid4())
-    db_user = models.User(
-        email=user.email,
-        password_hash=hashed_password,
-        is_verified=False,
-        verification_token=token
+# 👇 Create database tables
+models.Base.metadata.create_all(bind=engine)
+
+# 👇 Add the authentication/user system routes
+app.include_router(auth_router)
+
+def get_openai_client():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set")
+    return OpenAI(api_key=api_key)
+
+@app.get("/")
+def read_root():
+    return {"message": "ChemGPT Backend is alive!"}
+
+@app.post("/chat")
+async def chat(req: Request):
+    body = await req.json()
+    question = body.get("question", "")
+
+    if not question:
+        return {"answer": "⚠️ No question provided."}
+
+    system_prompt = (
+        "You are ChemGPT, an expert chemistry tutor. "
+        "Always explain chemistry questions clearly and in steps. "
+        "Use bullet points, numbered lists, or headers when needed. "
+        "Avoid dense text blocks. Keep formatting clean and easy to read. "
+        "If the user asks about a chemical reaction, always include:\n"
+        "- Step-by-step mechanism\n"
+        "- Key intermediates and transition states\n"
+        "- Any important notes for students\n\n"
+        "Respond like a human tutor who really wants the student to understand."
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    sent = utils.send_verification_email(user.email, token)
-    if not sent:
-        raise HTTPException(status_code=500, detail="Could not send verification email.")
-    return db_user
 
-@router.post("/login")
-def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.email == user.email).first()
-    if not db_user or not utils.verify_password(user.password, db_user.password_hash):
-        raise HTTPException(status_code=400, detail="Invalid credentials.")
-    if not db_user.is_verified:
-        raise HTTPException(status_code=403, detail="Email not verified.")
-    access_token = utils.create_access_token(data={"sub": db_user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    client = get_openai_client()
 
-@router.get("/verify-email")
-def verify_email(token: str, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.verification_token == token).first()
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid or expired verification token.")
-    db_user.is_verified = True
-    db_user.verification_token = None
-    db.commit()
-    return {"message": "Email verified. You can now log in."}
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question}
+        ]
+    )
+
+    answer = response.choices[0].message.content
+    return {"answer": answer}
