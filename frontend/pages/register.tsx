@@ -21,7 +21,6 @@ export default function RegisterPage() {
     setErrorMsg('');
     setSuccessMsg('');
 
-    // Password complexity check (frontend, also checked by backend)
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     if (!regex.test(password)) {
       setErrorMsg(
@@ -74,3 +73,61 @@ export default function RegisterPage() {
           Create your ChemGPT account
         </h1>
         {errorMsg && (
+          <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">{errorMsg}</div>
+        )}
+        {successMsg && (
+          <div className="bg-green-100 text-green-700 p-3 mb-4 rounded">{successMsg}</div>
+        )}
+        <form onSubmit={handleRegister} className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full border p-2 rounded"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full border p-2 rounded"
+            required
+          />
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={acceptTerms}
+              onChange={e => setAcceptTerms(e.target.checked)}
+              className="mr-2"
+            />
+            <span>
+              I accept the{' '}
+              <Link href="/terms" className="underline text-blue-700">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy" className="underline text-blue-700">
+                Privacy Policy
+              </Link>
+            </span>
+          </label>
+          <button
+            type="submit"
+            className="w-full bg-blue-700 text-white rounded p-2 mt-4"
+            disabled={loading}
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-700 hover:underline">
+            Log in
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
