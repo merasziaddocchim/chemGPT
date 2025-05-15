@@ -26,10 +26,10 @@ export default function HomePage() {
         ChemGPT
       </nav>
       <nav className="absolute top-6 right-8 text-sm space-x-6 text-gray-300">
-        <Link href="/chat" className="hover:text-white">Chat</a>
-        <Link href="/molecule" className="hover:text-white">Molecule</a>
-        <Link href="/retrosynthesis" className="hover:text-white">Retro</a>
-        <Link href="/spectroscopy" className="hover:text-white">Spectro</a>
+        <Link href="/chat" className="hover:text-white">Chat</Link>
+        <Link href="/molecule" className="hover:text-white">Molecule</Link>
+        <Link href="/retrosynthesis" className="hover:text-white">Retro</Link>
+        <Link href="/spectroscopy" className="hover:text-white">Spectro</Link>
       </nav>
 
       <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-6 mt-6">
