@@ -3,10 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from openai import OpenAI
 
-# 👇 NEW: import your user system
-from .database import engine
-from . import models
-from .auth import router as auth_router
+from database import engine
+import models
+from auth import router as auth_router
+
+# ... rest of your main.py code ...
+
+
 
 app = FastAPI()
 
