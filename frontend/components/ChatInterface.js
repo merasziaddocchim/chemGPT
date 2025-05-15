@@ -5,13 +5,15 @@ import MessageList from './MessageList'
 export default function ChatInterface({ initialQuery = '' }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  // Memoize handleSubmit with no dependencies so it's stable (does not change)
+  // Memoize handleSubmit, now handles loading state!
   const handleSubmit = useCallback(async (customInput) => {
     const question = typeof customInput === "string" ? customInput : input
-    if (!question.trim()) return
+    if (!question.trim() || loading) return
 
+    setLoading(true)
     const userMessage = { role: 'user', content: question }
     setMessages(prev => [...prev, userMessage])
     setInput('')
@@ -30,6 +32,7 @@ export default function ChatInterface({ initialQuery = '' }) {
           content: `Server error (code: ${res.status}). Please try again.`
         }
         setMessages(prev => [...prev, errorMessage])
+        setLoading(false)
         return
       }
 
@@ -51,14 +54,14 @@ export default function ChatInterface({ initialQuery = '' }) {
         content: 'Network error. Please check your connection and try again.'
       }])
     }
-  // Don't add input as a dependency!
-  }, [])
+    setLoading(false)
+  // loading is a dependency, so we don't re-create the function on every render
+  }, [input, loading])
 
   useEffect(() => {
     if (initialQuery) {
       handleSubmit(initialQuery)
     }
-    // Only run this when initialQuery changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQuery])
 
@@ -70,19 +73,21 @@ export default function ChatInterface({ initialQuery = '' }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !loading) {
               e.preventDefault()
               handleSubmit()
             }
           }}
           placeholder="Ask ChemGPT something..."
           className="flex-1 border border-gray-300 rounded px-4 py-2"
+          disabled={loading}
         />
         <button
           onClick={() => handleSubmit()}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className={`bg-blue-600 text-white px-4 py-2 rounded ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+          disabled={loading}
         >
-          Send
+          {loading ? "Sending..." : "Send"}
         </button>
       </footer>
     </div>
