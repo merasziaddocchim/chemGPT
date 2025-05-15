@@ -7,12 +7,7 @@ export default function ChatInterface({ initialQuery = '' }) {
   const [input, setInput] = useState('')
   const router = useRouter()
 
-  useEffect(() => {
-    if (initialQuery) {
-      handleSubmit(initialQuery)
-    }
-  }, [initialQuery])
-
+  // 1. Move handleSubmit above useEffect
   const handleSubmit = async (customInput) => {
     const question = customInput || input
     if (!question.trim()) return
@@ -57,6 +52,13 @@ export default function ChatInterface({ initialQuery = '' }) {
       }])
     }
   }
+
+  // 2. Add handleSubmit to the useEffect dependency array
+  useEffect(() => {
+    if (initialQuery) {
+      handleSubmit(initialQuery)
+    }
+  }, [initialQuery, handleSubmit])
 
   return (
     <div className="flex flex-col h-screen">
