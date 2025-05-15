@@ -5,3 +5,11 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
+
+# Auth system dependencies
+sqlalchemy
+pydantic
+passlib[bcrypt]
+python-jose[cryptography]
+email-validator
+python-dotenv
