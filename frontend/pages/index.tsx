@@ -1,24 +1,30 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
+import { useState, KeyboardEvent, ChangeEvent, useCallback } from "react";
 import { useRouter } from "next/router";
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function HomePage() {
   const [query, setQuery] = useState<string>("");
   const router = useRouter();
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     if (query.trim() !== "") {
       router.push(`/chat?question=${encodeURIComponent(query)}`);
     }
-  };
+  }, [query, router]);
 
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleSearch();
-  };
+  const handleInputKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") handleSearch();
+    },
+    [handleSearch]
+  );
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value);
+    },
+    []
+  );
 
   const suggestions: string[] = [
     "What is the structure of aspirin?",
@@ -47,8 +53,11 @@ export default function HomePage() {
       </p>
       
       <div className="w-full max-w-xl flex gap-2 mb-6">
+        <label htmlFor="main-query" className="sr-only">Ask ChemGPT</label>
         <input
+          id="main-query"
           type="text"
+          aria-label="Ask ChemGPT"
           placeholder="Ask ChemGPT about reactions, molecules, spectra..."
           value={query}
           onChange={handleInputChange}
@@ -58,6 +67,7 @@ export default function HomePage() {
         <button
           onClick={handleSearch}
           className="px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+          aria-label="Ask ChemGPT"
         >
           Ask
         </button>
@@ -70,9 +80,18 @@ export default function HomePage() {
             <li
               key={i}
               className="cursor-pointer text-cyan-300 hover:underline"
+              tabIndex={0}
+              role="button"
+              aria-label={`Try: ${s}`}
               onClick={() => {
                 setQuery(s);
                 router.push(`/chat?question=${encodeURIComponent(s)}`);
+              }}
+              onKeyDown={e => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setQuery(s);
+                  router.push(`/chat?question=${encodeURIComponent(s)}`);
+                }
               }}
             >
               {s}
