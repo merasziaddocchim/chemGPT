@@ -1,10 +1,9 @@
-
-import { useState } from "react";
+import { useState, KeyboardEvent, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 
 export default function HomePage() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
   const router = useRouter();
 
   const handleSearch = () => {
@@ -13,7 +12,15 @@ export default function HomePage() {
     }
   };
 
-  const suggestions = [
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const suggestions: string[] = [
     "What is the structure of aspirin?",
     "Show me the IR spectrum of benzene",
     "Retrosynthesis of paracetamol",
@@ -44,8 +51,8 @@ export default function HomePage() {
           type="text"
           placeholder="Ask ChemGPT about reactions, molecules, spectra..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
           className="flex-grow p-3 rounded-lg text-black focus:outline-none"
         />
         <button
