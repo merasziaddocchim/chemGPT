@@ -1,5 +1,12 @@
-// frontend/components/ChatInput.js
-export default function ChatInput({ input, setInput, onSubmit }) {
+import React from 'react';
+
+type ChatInputProps = {
+  input: string;
+  setInput: (value: string) => void;
+  onSubmit: () => void;
+};
+
+export default function ChatInput({ input, setInput, onSubmit }: ChatInputProps) {
   return (
     <div className="flex border-t p-4">
       <input
@@ -7,8 +14,8 @@ export default function ChatInput({ input, setInput, onSubmit }) {
         className="flex-grow px-4 py-2 border rounded-l-lg focus:outline-none"
         placeholder="Ask ChemGPT something..."
         value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && onSubmit()}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && onSubmit()}
       />
       <button
         onClick={onSubmit}
