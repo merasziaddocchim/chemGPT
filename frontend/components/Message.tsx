@@ -1,6 +1,9 @@
-// frontend/components/Message.tsx
-
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 type MessageProps = {
   role: 'user' | 'bot';
@@ -18,25 +21,27 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
     safeContent = JSON.stringify(content, null, 2);
   }
 
-  // You can add Markdown/KaTeX rendering here if needed
   return (
     <div
       style={{
-        background: role === 'user' ? '#cce3ff' : '#f0f0f0',
-        color: role === 'user' ? '#08335c' : '#111',
+        background: role === 'user' ? '#cce3ff' : '#23232b',
+        color: role === 'user' ? '#08335c' : '#fff',
         borderRadius: 14,
         padding: '14px 18px',
         margin: '12px 0',
         maxWidth: '85%',
         alignSelf: role === 'user' ? 'flex-end' : 'flex-start',
-        whiteSpace: 'pre-wrap',
         fontSize: 16,
         boxShadow: role === 'user'
           ? '0 2px 8px rgba(80,160,255,0.10)'
           : '0 2px 8px rgba(0,0,0,0.06)'
       }}
     >
-      {safeContent}
+      <ReactMarkdown
+        children={safeContent}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+      />
     </div>
   );
 };
