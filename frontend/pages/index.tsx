@@ -2,6 +2,7 @@ import { useState, KeyboardEvent, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 export default function HomePage() {
   const [query, setQuery] = useState<string>("");
