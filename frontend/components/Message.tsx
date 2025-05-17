@@ -38,10 +38,11 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
       }}
     >
       <ReactMarkdown
-        children={safeContent}
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
-      />
+  remarkPlugins={[remarkGfm, remarkMath]}
+  rehypePlugins={[rehypeKatex]}
+>
+  {safeContent}
+</ReactMarkdown>
     </div>
   );
 };
