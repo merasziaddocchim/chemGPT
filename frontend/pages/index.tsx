@@ -1,6 +1,7 @@
 import { useState, KeyboardEvent, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function HomePage() {
   const [query, setQuery] = useState<string>("");
@@ -70,6 +71,16 @@ export default function HomePage() {
       <p className="text-lg text-center max-w-xl mb-8 text-gray-300">
         ChemGPT empowers researchers, students, and chemists with cutting-edge tools for retrosynthesis, molecular visualization, and spectroscopy — all in one AI-driven platform.
       </p>
+
+      {/* Card Example */}
+      <Card className="w-[350px] mx-auto mb-8">
+        <CardHeader>
+          <CardTitle>Welcome to ChemGPT!</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Start exploring retrosynthesis, 3D molecules, and more.</p>
+        </CardContent>
+      </Card>
 
       {/* Ask Input */}
       <div className="w-full max-w-xl flex gap-2 mb-6">
