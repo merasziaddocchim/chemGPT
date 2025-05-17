@@ -74,14 +74,22 @@ export default function HomePage() {
       </p>
 
       {/* Card Example */}
-      <Card className="w-[350px] mx-auto mb-8">
-        <CardHeader>
-          <CardTitle>Welcome to ChemGPT!</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>Start exploring retrosynthesis, 3D molecules, and more.</p>
-        </CardContent>
-      </Card>
+      <motion.div
+  initial={{ opacity: 0, y: 40 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.7, ease: "easeOut" }}
+  className="w-[350px] mx-auto mb-8"
+>
+  <Card>
+    <CardHeader>
+      <CardTitle>Welcome to ChemGPT!</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p>Start exploring retrosynthesis, 3D molecules, and more.</p>
+    </CardContent>
+  </Card>
+</motion.div>
+
 
       {/* Ask Input */}
       <div className="w-full max-w-xl flex gap-2 mb-6">
