@@ -44,7 +44,10 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
         components={{
           code({ node, inline, className, children, ...props }) {
             return !inline ? (
-              <pre className="bg-gray-900 text-white rounded-md p-3 overflow-x-auto" {...props}>
+              <pre
+                className="bg-gray-900 text-white rounded-md p-3 overflow-x-auto"
+                {...props}
+              >
                 <code>{children}</code>
               </pre>
             ) : (
