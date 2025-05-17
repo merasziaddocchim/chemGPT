@@ -11,7 +11,6 @@ type MessageProps = {
 };
 
 const Message: React.FC<MessageProps> = ({ role, content }) => {
-  // Normalize content
   let safeContent = '';
   if (typeof content === 'object' && content !== null && 'answer' in content) {
     safeContent = content.answer || '';
@@ -37,12 +36,11 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
           : '0 2px 8px rgba(0,0,0,0.06)'
       }}
     >
-      <ReactMarkdown
-  remarkPlugins={[remarkGfm, remarkMath]}
-  rehypePlugins={[rehypeKatex]}
->
-  {safeContent}
-</ReactMarkdown>
+      {ReactMarkdown({
+        children: safeContent,
+        remarkPlugins: [remarkGfm, remarkMath],
+        rehypePlugins: [rehypeKatex],
+      })}
     </div>
   );
 };
