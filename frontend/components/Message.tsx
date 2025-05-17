@@ -39,27 +39,27 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
       }}
     >
       <ReactMarkdown
-  remarkPlugins={[remarkGfm, remarkMath]}
-  rehypePlugins={[rehypeKatex]}
-  children={safeContent}
-  components={{
-    code({ node, inline, className, children, ...props }) {
-      return !inline ? (
-        <pre
-          className="bg-gray-900 text-white rounded-md p-3 overflow-x-auto"
-          {...props}
-        >
-          <code>{children}</code>
-        </pre>
-      ) : (
-        <code className="bg-gray-200 rounded px-1 py-0.5" {...props}>
-          {children}
-        </code>
-      );
-    },
-  }}
-/>
-
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            return !inline ? (
+              <pre
+                className="bg-gray-900 text-white rounded-md p-3 overflow-x-auto"
+                {...props}
+              >
+                <code>{children}</code>
+              </pre>
+            ) : (
+              <code className="bg-gray-200 rounded px-1 py-0.5" {...props}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      >
+        {safeContent}
+      </ReactMarkdown>
     </div>
   );
 };
