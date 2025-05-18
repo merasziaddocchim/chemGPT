@@ -11,7 +11,7 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages }) => (
-  <div className="flex flex-col gap-2">
+  <div className="flex flex-col gap-1">
     {messages.map((msg, i) => (
       <Message key={i} role={msg.role} content={msg.content} />
     ))}
