@@ -7,9 +7,7 @@ from database import engine
 import models
 from auth import router as auth_router
 
-# ... rest of your main.py code ...
-
-
+from aizynth import predict_route  # 👈 NEW import for retrosynthesis
 
 app = FastAPI()
 
@@ -69,3 +67,14 @@ async def chat(req: Request):
 
     answer = response.choices[0].message.content
     return {"answer": answer}
+
+# ===========================
+#  NEW: RETROSYNTHESIS ENDPOINT
+# ===========================
+@app.post("/retrosynthesis")
+async def retrosynthesis(req: Request):
+    body = await req.json()
+    smiles = body.get("smiles", "")
+    if not smiles:
+        return {"answer": "⚠️ No SMILES provided."}
+    return predict_route(smiles)
