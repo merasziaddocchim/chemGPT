@@ -12,39 +12,37 @@ type MessageProps = {
 
 const Message: React.FC<MessageProps> = ({ role, content }) => {
   const isUser = role === "user";
+
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"} w-full`}>
+    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"} mb-2`}>
       <div
         className={`
-          max-w-[80vw] md:max-w-[60%]
-          px-4 py-3 rounded-2xl shadow-lg transition-all animate-fadein
+          rounded-2xl px-4 py-3 shadow
           ${isUser
             ? "bg-cyan-600 text-white rounded-br-md"
             : "bg-neutral-800 text-neutral-100 rounded-bl-md"
           }
+          max-w-[92vw] sm:max-w-[80vw] md:max-w-[60%]
+          text-base leading-relaxed
+          break-words
         `}
-        style={{
-          wordBreak: "break-word",
-        }}
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkMath]}
           rehypePlugins={[rehypeKatex]}
           components={{
-            code({ inline, children, ...props }) {
+            code({ inline, className, children, ...props }) {
               return !inline ? (
-                <pre className="bg-neutral-900 text-white rounded-lg p-3 overflow-x-auto">
+                <pre className="bg-gray-900 text-white rounded-md p-3 overflow-x-auto">
                   <code>{children}</code>
                 </pre>
               ) : (
-                <code className="bg-neutral-200 text-neutral-800 rounded px-1 py-0.5" {...props}>
-                  {children}
-                </code>
+                <code className="bg-gray-200 rounded px-1 py-0.5">{children}</code>
               );
             },
           }}
         >
-          {typeof content === "string" ? content : JSON.stringify(content, null, 2)}
+          {content}
         </ReactMarkdown>
       </div>
     </div>
