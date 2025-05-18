@@ -18,15 +18,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = '' }) => {
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-
   const router = useRouter();
 
-  // Dynamic SEO & Tab Title Logic
+  // SEO & Dynamic Title
   const latestBotMsg = [...messages].reverse().find(msg => msg.role === 'bot');
   const defaultTitle = "chemGPT - ChemGPT AI Chat";
   const defaultDescription = "Ask questions about molecules, spectra, retrosynthesis, and chemistry with chemGPT. Your AI Chemistry Assistant.";
   const defaultImage = "/opengraph-image.png";
   const baseUrl = "https://www.chemgpt.app";
+
   let dynamicTitle = defaultTitle;
   let dynamicDescription = defaultDescription;
   if (latestBotMsg && typeof latestBotMsg.content === 'string') {
@@ -93,41 +93,31 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = '' }) => {
         <title>{dynamicTitle}</title>
         <meta name="description" content={dynamicDescription} />
         <link rel="canonical" href={canonicalUrl} />
-
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:title" content={dynamicTitle} />
         <meta property="og:description" content={dynamicDescription} />
         <meta property="og:image" content={defaultImage} />
-
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={canonicalUrl} />
         <meta name="twitter:title" content={dynamicTitle} />
         <meta name="twitter:description" content={dynamicDescription} />
         <meta name="twitter:image" content={defaultImage} />
-
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col h-screen bg-gradient-to-b from-neutral-950 to-neutral-900">
-        {/* Header */}
-        <header className="flex items-center px-4 py-3 bg-neutral-950 shadow z-10">
-          <span className="font-bold text-2xl text-cyan-400 tracking-tight select-none">ChemGPT</span>
-          <span className="ml-3 text-sm text-neutral-400 font-mono hidden sm:inline">AI Chemistry Assistant</span>
-        </header>
-
-        {/* Chat area */}
-        <main className="flex-1 overflow-y-auto px-2 pt-3 pb-4 md:px-0">
+      <div className="flex flex-col h-screen w-full bg-neutral-950">
+        {/* Main Chat Area */}
+        <main className="flex-1 overflow-y-auto px-0 py-4">
           <MessageList messages={messages} />
           <div ref={bottomRef} />
         </main>
-
-        {/* Input */}
-        <footer className="w-full bg-neutral-900 px-2 md:px-0 py-3 z-10">
+        {/* Sticky Input */}
+        <footer className="sticky bottom-0 w-full bg-neutral-900 px-0 py-2 z-10 border-t border-neutral-800">
           <form
-            className="flex max-w-xl mx-auto items-center gap-2 bg-neutral-800 rounded-2xl shadow-lg px-3 py-2"
+            className="flex items-center max-w-2xl mx-auto bg-neutral-800 rounded-2xl shadow px-3 py-2"
             onSubmit={e => {
               e.preventDefault();
               handleSubmit();
@@ -143,7 +133,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = '' }) => {
             />
             <button
               type="submit"
-              className={`rounded-full p-2 hover:bg-cyan-700/20 transition ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+              className={`rounded-full p-3 hover:bg-cyan-700/20 transition ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
               disabled={loading}
               aria-label="Send"
             >
