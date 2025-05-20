@@ -62,16 +62,20 @@ export default function HomePage() {
         </p>
 
         {/* Ask Bar */}
-        <div className="w-full max-w-xl flex gap-2 mb-6">
-          <input
-            type="text"
-            placeholder="Ask a chemistry question…"
-            className="flex-grow px-4 py-3 rounded-xl border border-gray-300 shadow bg-white text-gray-900 focus:outline-none"
-          />
-          <button className="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-xl text-white font-bold shadow">
-            Ask
-          </button>
-        </div>
+        <div className="w-full max-w-xl flex flex-col sm:flex-row gap-2 mb-6 px-2">
+  <input
+    type="text"
+    ...
+    className="flex-grow p-3 rounded-lg text-black focus:outline-none"
+  />
+  <button
+    ...
+    className="px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+  >
+    Ask
+  </button>
+</div>
+
         {/* Hashtags */}
         <div className="flex gap-2 mb-6">
           <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#ChemistryAI</span>
