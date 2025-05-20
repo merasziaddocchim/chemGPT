@@ -32,7 +32,7 @@ export default function HomePage() {
 
   // --- On Enter, run the search
   const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === "Enter") handleSearch(undefined);
   };
 
   // --- Run search: redirect to /chat with the query
