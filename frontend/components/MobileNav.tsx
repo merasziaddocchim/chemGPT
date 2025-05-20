@@ -38,4 +38,3 @@ export default function MobileNav() {
     </div>
   );
 }
-export default MobileNav;
