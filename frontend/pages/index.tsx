@@ -6,6 +6,7 @@ import FeatureCard from "@/components/FeatureCard";
 import PersonaCard from "@/components/PersonaCard";
 import RoadmapStep from "@/components/RoadmapStep";
 import FAQAccordion from "@/components/FAQAccordion";
+import CommunityCard from "@/components/CommunityCard";
 
 // Optional: Import your card/UI components or use plain divs for now
 
@@ -242,7 +243,39 @@ export default function HomePage() {
 </section>
 
 
-      
+  {/* 7. Join Our Community */}
+<section className="w-full flex flex-col items-center py-16 px-4 bg-white">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
+    Join Our <span className="text-violet-700">Community</span>
+  </h2>
+  <p className="text-lg text-gray-600 text-center mb-10 max-w-2xl">
+    Join ChemGPT’s Discord server for beta access, support, and early access to features.
+  </p>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+    <CommunityCard
+      icon="💬"
+      title="Discord Community"
+      desc="Join our Discord to discuss features, get beta access, and early access to features."
+      link="https://discord.gg/your-link"
+      linkText="Join Discord"
+    />
+    <CommunityCard
+      icon="📖"
+      title="Documentation"
+      desc="Explore example code, API references, and tutorials in our documentation."
+      link="https://docs.chemgpt.app/"
+      linkText="Read Docs"
+    />
+    <CommunityCard
+      icon="👥"
+      title="User Forum"
+      desc="Ask questions, share your ideas, and connect with other ChemGPT users."
+      link="https://forum.chemgpt.app/"
+      linkText="Visit Forum"
+    />
+  </div>
+</section>
+    
       {/* ... */}
 
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
