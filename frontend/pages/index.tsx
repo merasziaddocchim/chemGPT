@@ -9,13 +9,13 @@ import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
 
 
-const suggestions = [
-  "What is the structure of aspirin?",
-  "Show me the IR spectrum of benzene",
-  "Retrosynthesis of paracetamol",
-  "Visualize caffeine molecule",
-];
-
+const handleSearch = (customQuery) => {
+  const q = customQuery !== undefined ? customQuery : query;
+  if (q.trim() !== "") {
+    alert(`You searched for: ${q}`);
+    // Later, replace alert with your real search logic!
+  }
+};
 
 export default function HomePage() {
   // For hero chatbar
@@ -85,7 +85,10 @@ export default function HomePage() {
       className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
     />
     <button
-      onClick={handleSearch}
+      onClick={() => {
+  setQuery(s);
+  handleSearch(s);
+}}
       className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
     >
       Ask
