@@ -77,6 +77,69 @@ export default function HomePage() {
       </section>
 
       {/* More sections here: Features, Who For, Roadmap, FAQ, Community, CTA, Footer */}
+
+{/* 3. Powerful AI-Driven Features */}
+<section id="features" className="w-full flex flex-col items-center py-16 px-4 bg-white">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
+    Powerful <span className="text-violet-700">AI-Driven</span> Features
+  </h2>
+  <p className="text-lg text-gray-600 text-center mb-10 max-w-2xl">
+    ChemGPT combines cutting-edge AI with chemistry expertise to deliver tools that streamline research and learning.
+  </p>
+
+  {/* Features grid */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl w-full">
+    {/* Main features */}
+    <FeatureCard
+      icon="💬"
+      title="AI Chat Assistant"
+      desc="Get answers to chemistry questions with intelligent formatting and LaTeX support for chemical equations."
+    />
+    <FeatureCard
+      icon="🧬"
+      title="Molecule Visualization"
+      desc="Interactive 3D rendering of molecules using advanced visualization libraries."
+    />
+    <FeatureCard
+      icon="🔄"
+      title="Retrosynthesis Tool"
+      desc="AI-powered analysis to discover synthetic routes for target molecules."
+    />
+    <FeatureCard
+      icon="🧪"
+      title="Spectroscopy Module"
+      desc="Predict and interpret NMR, IR, and MS spectra with visual overlays."
+    />
+    <FeatureCard
+      icon="📚"
+      title="Chemistry Database"
+      desc="Access comprehensive chemical data and information for your research."
+    />
+    {/* Add more if you want */}
+    
+    {/* Coming Soon features */}
+    <FeatureCard
+      icon="📝"
+      title="AI Lab Notebook"
+      desc="Automated record-keeping & documentation with experiment insight and suggestions."
+      soon
+    />
+    <FeatureCard
+      icon="🤝"
+      title="Collaboration Tools"
+      desc="Team-based workspaces with role control and chemistry-aware project management."
+      soon
+    />
+    <FeatureCard
+      icon="🔐"
+      title="Secure API Access"
+      desc="Integrate ChemGPT functionalities directly into your lab systems or workflows."
+      soon
+    />
+  </div>
+</section>
+
+      
       {/* ... */}
 
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
