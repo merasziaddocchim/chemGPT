@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import FeatureCard from "@/components/FeatureCard";
+import PersonaCard from "@/components/PersonaCard";
 
 // Optional: Import your card/UI components or use plain divs for now
 
