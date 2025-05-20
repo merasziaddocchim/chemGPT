@@ -5,6 +5,7 @@ import { useState } from "react";
 import FeatureCard from "@/components/FeatureCard";
 import PersonaCard from "@/components/PersonaCard";
 import RoadmapStep from "@/components/RoadmapStep";
+import FAQAccordion from "@/components/FAQAccordion";
 
 // Optional: Import your card/UI components or use plain divs for now
 
