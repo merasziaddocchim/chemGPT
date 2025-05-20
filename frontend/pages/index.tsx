@@ -1,28 +1,16 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
-import { useRouter } from "next/router";
+// app/page.tsx or pages/index.tsx
+
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { useState } from "react";
+
+// Optional: Import your card/UI components or use plain divs for now
 
 export default function HomePage() {
-  const [query, setQuery] = useState<string>("");
-  const router = useRouter();
+  // For the email input (CTA)
+  const [email, setEmail] = useState("");
 
-  const handleSearch = () => {
-    if (query.trim() !== "") {
-      router.push(`/chat?question=${encodeURIComponent(query)}`);
-    }
-  };
-
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  const suggestions: string[] = [
+  // For suggestions, feature toggles, etc.
+  const suggestions = [
     "What is the structure of aspirin?",
     "Show me the IR spectrum of benzene",
     "Retrosynthesis of paracetamol",
@@ -30,122 +18,69 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col items-center justify-center px-4 relative">
-      {/* Navbar */}
-      <nav className="absolute top-6 left-8 text-xl font-bold text-cyan-400">
-        ChemGPT
-      </nav>
-      <nav className="absolute top-6 right-8 flex gap-4 items-center text-sm">
-        <Link href="/chat" className="hover:text-white text-gray-300">
-          Chat
+    <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
+      {/* 1. Header/Navbar */}
+      <header className="w-full py-6 px-6 flex justify-between items-center">
+        <Link href="/" className="font-extrabold text-2xl text-violet-700 tracking-tight">
+          <span className="mr-1">🧪</span> ChemGPT
         </Link>
-        <Link href="/molecule" className="hover:text-white text-gray-300">
-          Molecule
-        </Link>
-        <Link href="/retrosynthesis" className="hover:text-white text-gray-300">
-          Retro
-        </Link>
-        <Link href="/spectroscopy" className="hover:text-white text-gray-300">
-          Spectro
-        </Link>
-        {/* Divider */}
-        <span className="h-5 border-l border-gray-600 mx-2"></span>
-        {/* Login/Register */}
-        <Link
-          href="/login"
-          className="bg-transparent border border-cyan-400 text-cyan-400 px-4 py-1 rounded-lg hover:bg-cyan-400 hover:text-black transition"
-        >
-          Login
-        </Link>
-        <Link
-          href="/register"
-          className="bg-cyan-500 px-4 py-1 rounded-lg text-white font-semibold hover:bg-cyan-600 transition"
-        >
-          Register
-        </Link>
-      </nav>
+        <nav className="flex items-center gap-6 text-base font-medium">
+          <Link href="#features" className="hover:text-violet-700 transition">Features</Link>
+          <Link href="#who" className="hover:text-violet-700 transition">For Who</Link>
+          <Link href="#roadmap" className="hover:text-violet-700 transition">Roadmap</Link>
+          <Link href="#faq" className="hover:text-violet-700 transition">FAQ</Link>
+          <Link
+            href="/register"
+            className="ml-4 bg-violet-600 hover:bg-violet-700 text-white px-5 py-2 rounded-lg font-bold shadow"
+          >
+            Get Early Access
+          </Link>
+        </nav>
+      </header>
 
-      {/* Hero */}
-      <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-6 mt-16">
-        Unlock Chemistry Intelligence with <span className="text-cyan-400">AI</span>
-      </h1>
-      <p className="text-lg text-center max-w-xl mb-8 text-gray-300">
-        ChemGPT empowers researchers, students, and chemists with cutting-edge tools for retrosynthesis, molecular visualization, and spectroscopy — all in one AI-driven platform.
-      </p>
+      {/* 2. Hero Section */}
+      <section className="flex flex-col items-center justify-center pt-10 pb-8">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
+          The <span className="text-violet-700">AI-Powered Platform</span> for <span className="text-cyan-500">Chemistry</span>
+        </h1>
+        <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
+          Combining AI models, molecular visualization, and educational tools for students, researchers, and professionals in chemistry.
+        </p>
 
-      {/* Card Example */}
-      <motion.div
-  initial={{ opacity: 0, y: 40 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.7, ease: "easeOut" }}
-  className="w-[350px] mx-auto mb-8"
->
-  <Card>
-    <CardHeader>
-      <CardTitle>Welcome to ChemGPT!</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p>Start exploring retrosynthesis, 3D molecules, and more.</p>
-    </CardContent>
-  </Card>
-</motion.div>
+        {/* Ask Bar */}
+        <div className="w-full max-w-xl flex gap-2 mb-6">
+          <input
+            type="text"
+            placeholder="Ask a chemistry question…"
+            className="flex-grow px-4 py-3 rounded-xl border border-gray-300 shadow bg-white text-gray-900 focus:outline-none"
+          />
+          <button className="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-xl text-white font-bold shadow">
+            Ask
+          </button>
+        </div>
+        {/* Hashtags */}
+        <div className="flex gap-2 mb-6">
+          <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#ChemistryAI</span>
+          <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#MoleculeViz</span>
+          <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#Retrosynthesis</span>
+        </div>
+        {/* Demo Image */}
+        <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
+          {/* Replace with your actual demo/graphic */}
+          <img src="/demo-molecule.png" alt="ChemGPT Visualization Demo" className="mx-auto mb-3" />
+          <div className="flex justify-end w-full">
+            <button className="text-xs text-gray-400 hover:underline flex items-center gap-1">
+              <span>Export as JPEG</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
+      {/* More sections here: Features, Who For, Roadmap, FAQ, Community, CTA, Footer */}
+      {/* ... */}
 
-      {/* Ask Input */}
-      <div className="w-full max-w-xl flex gap-2 mb-6">
-        <input
-          type="text"
-          placeholder="Ask ChemGPT about reactions, molecules, spectra..."
-          value={query}
-          onChange={handleInputChange}
-          onKeyDown={handleInputKeyDown}
-          className="flex-grow p-3 rounded-lg text-black focus:outline-none"
-        />
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
-        >
-          Ask
-        </button>
-      </div>
-
-      {/* Suggestions */}
-      <div className="text-sm text-gray-400 mb-8">
-        Try these:
-        <ul className="mt-2 space-y-1">
-          {suggestions.map((s, i) => (
-            <li
-              key={i}
-              className="cursor-pointer text-cyan-300 hover:underline"
-              onClick={() => {
-                setQuery(s);
-                router.push(`/chat?question=${encodeURIComponent(s)}`);
-              }}
-            >
-              {s}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Big Hero Buttons */}
-      <div className="flex gap-6 mt-2">
-        <Link
-          href="/register"
-          className="bg-cyan-500 px-8 py-3 rounded-xl text-lg font-bold shadow-lg hover:bg-cyan-600 transition"
-        >
-          Get Started – Register
-        </Link>
-        <Link
-          href="/login"
-          className="bg-white px-8 py-3 rounded-xl text-lg font-bold text-cyan-500 border-2 border-cyan-400 shadow-lg hover:bg-cyan-50 transition"
-        >
-          Login
-        </Link>
-      </div>
-
-      <footer className="absolute bottom-6 text-xs text-gray-500">
-        Built by MERAS ZIAD – chemgpt.app
+      <footer className="py-8 mt-16 text-center text-xs text-gray-400">
+        © {new Date().getFullYear()} ChemGPT. All rights reserved. <span className="ml-2">for the chemistry community</span>
       </footer>
     </div>
   );
