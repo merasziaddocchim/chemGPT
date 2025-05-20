@@ -13,3 +13,4 @@ function PersonaCard({ icon, title, desc }: PersonaCardProps) {
     </div>
   );
 }
+export default PersonaCard;
