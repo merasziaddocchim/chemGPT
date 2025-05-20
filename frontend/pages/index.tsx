@@ -64,22 +64,28 @@ export default function HomePage() {
           Combining AI models, molecular visualization, and educational tools for students, researchers, and professionals in chemistry.
         </p>
         {/* Ask Bar */}
-        <div className="w-full max-w-xl flex flex-col sm:flex-row gap-2 mb-6 px-2">
-          <input
-            type="text"
-            placeholder="Ask ChemGPT about reactions, molecules, spectra..."
-            value={query}
-            onChange={handleInputChange}
-            onKeyDown={handleInputKeyDown}
-            className="flex-grow p-3 rounded-lg text-black focus:outline-none"
-          />
-          <button
-            onClick={handleSearch}
-            className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
-          >
-            Ask
-          </button>
-        </div>
+        
+<div className="w-full max-w-xl mb-6 px-2">
+  <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
+    <input
+      type="text"
+      placeholder="Ask ChemGPT about reactions, molecules, spectra..."
+      value={query}
+      onChange={handleInputChange}
+      onKeyDown={handleInputKeyDown}
+      className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
+    />
+    <button
+      onClick={handleSearch}
+      className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+    >
+      Ask
+    </button>
+  </div>
+</div>
+
+
+        
         {/* Hashtags */}
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
           <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#ChemistryAI</span>
