@@ -8,37 +8,33 @@ import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
 
-
-const handleSearch = (customQuery) => {
-  const q = customQuery !== undefined ? customQuery : query;
-  if (q.trim() !== "") {
-    alert(`You searched for: ${q}`);
-    // Later, replace alert with your real search logic!
-  }
-};
+// Suggestions for the chatbar
+const suggestions = [
+  "What is the structure of aspirin?",
+  "Show me the IR spectrum of benzene",
+  "Retrosynthesis of paracetamol",
+  "Visualize caffeine molecule",
+];
 
 export default function HomePage() {
-  // For hero chatbar
+  // State
   const [query, setQuery] = useState("");
-  const handleInputChange = (e) => setQuery(e.target.value);
-  const handleInputKeyDown = (e) => { if (e.key === "Enter") handleSearch(); };
-  const handleSearch = () => {
-    if (query.trim() !== "") {
-      // You can change this to your routing logic:
-      alert(`You searched for: ${query}`);
-    }
-  };
-
-  // For waitlist email input (bottom CTA)
   const [email, setEmail] = useState("");
 
-  // Suggestions for the chatbar (optional, not displayed here)
-  const suggestions = [
-    "What is the structure of aspirin?",
-    "Show me the IR spectrum of benzene",
-    "Retrosynthesis of paracetamol",
-    "Visualize caffeine molecule",
-  ];
+  // Handlers
+  const handleInputChange = (e) => setQuery(e.target.value);
+  const handleInputKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
+
+  // Single handleSearch (accepts optional customQuery)
+  const handleSearch = (customQuery) => {
+    const q = customQuery !== undefined ? customQuery : query;
+    if (q.trim() !== "") {
+      // Replace alert with router push or your logic later!
+      alert(`You searched for: ${q}`);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
