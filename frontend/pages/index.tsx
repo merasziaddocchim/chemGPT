@@ -227,6 +227,20 @@ export default function HomePage() {
 </section>
 
 
+      {/* 6. Frequently Asked Questions */}
+<section id="faq" className="w-full flex flex-col items-center py-16 px-4 bg-slate-50">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
+    Frequently Asked <span className="text-cyan-600">Questions</span>
+  </h2>
+  <p className="text-lg text-gray-600 text-center mb-10 max-w-2xl">
+    Got questions about ChemGPT? Find answers to the most common questions below.
+  </p>
+  <div className="max-w-2xl w-full">
+    <FAQAccordion />
+  </div>
+</section>
+
+
       
       {/* ... */}
 
