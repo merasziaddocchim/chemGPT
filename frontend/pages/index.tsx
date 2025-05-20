@@ -8,6 +8,15 @@ import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
 
+
+const suggestions = [
+  "What is the structure of aspirin?",
+  "Show me the IR spectrum of benzene",
+  "Retrosynthesis of paracetamol",
+  "Visualize caffeine molecule",
+];
+
+
 export default function HomePage() {
   // For hero chatbar
   const [query, setQuery] = useState("");
@@ -82,6 +91,20 @@ export default function HomePage() {
       Ask
     </button>
   </div>
+
+  <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
+  {suggestions.map((s, i) => (
+    <button
+      key={i}
+      type="button"
+      onClick={() => setQuery(s)}
+      className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
+    >
+      {s}
+    </button>
+  ))}
+</div>
+
 </div>
 
 
