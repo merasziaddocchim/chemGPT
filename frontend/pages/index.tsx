@@ -24,14 +24,14 @@ export default function HomePage() {
   // Handlers
   const handleInputChange = (e) => setQuery(e.target.value);
   const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === "Enter") handleSearch(query);
   };
 
   // Single handleSearch (accepts optional customQuery)
   const handleSearch = (customQuery) => {
     const q = customQuery !== undefined ? customQuery : query;
     if (q.trim() !== "") {
-      // Replace alert with router push or your logic later!
+      // Replace alert with router push or your search logic!
       alert(`You searched for: ${q}`);
     }
   };
@@ -69,45 +69,37 @@ export default function HomePage() {
           Combining AI models, molecular visualization, and educational tools for students, researchers, and professionals in chemistry.
         </p>
         {/* Ask Bar */}
-        
-<div className="w-full max-w-xl mb-6 px-2">
-  <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
-    <input
-      type="text"
-      placeholder="Ask ChemGPT about reactions, molecules, spectra..."
-      value={query}
-      onChange={handleInputChange}
-      onKeyDown={handleInputKeyDown}
-      className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
-    />
-    <button
-      onClick={() => {
-  setQuery(s);
-  handleSearch(s);
-}}
-      className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
-    >
-      Ask
-    </button>
-  </div>
-
-  <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
-  {suggestions.map((s, i) => (
-    <button
-      key={i}
-      type="button"
-      onClick={() => setQuery(s)}
-      className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
-    >
-      {s}
-    </button>
-  ))}
-</div>
-
-</div>
-
-
-        
+        <div className="w-full max-w-xl mb-6 px-2">
+          <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
+            <input
+              type="text"
+              placeholder="Ask ChemGPT about reactions, molecules, spectra..."
+              value={query}
+              onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
+              className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            />
+            <button
+              onClick={() => handleSearch(query)}
+              className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+            >
+              Ask
+            </button>
+          </div>
+          {/* Suggestions */}
+          <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
+            {suggestions.map((s, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => handleSearch(s)}
+                className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
         {/* Hashtags */}
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
           <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#ChemistryAI</span>
@@ -247,7 +239,7 @@ export default function HomePage() {
       </section>
 
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} ChemGPT. All rights reserved. <span className="ml-2">for the chemistry community</span>
+        © {new Date().getFullYear()} ChemGPT. All rights reserved. <span className="ml-2">by MERAS ZIAD</span>
       </footer>
     </div>
   );
