@@ -34,7 +34,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
       {/* 1. Header/Navbar */}
-      <header className="w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white z-20">
+      <header className="sticky top-0 z-50 w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white/90 backdrop-blur">
         <Link href="/" className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">
           <span className="mr-1">🧪</span> ChemGPT
         </Link>
