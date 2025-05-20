@@ -141,6 +141,49 @@ export default function HomePage() {
 </section>
 
       
+      {/* 4. Who ChemGPT Is For */}
+<section id="who" className="w-full flex flex-col items-center py-16 px-4 bg-slate-50">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
+    Who <span className="text-cyan-600">ChemGPT</span> Is For
+  </h2>
+  <p className="text-lg text-gray-600 text-center mb-10 max-w-2xl">
+    Our platform is designed to support everyone in the chemistry ecosystem, from students to professional researchers.
+  </p>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
+    <PersonaCard
+      icon="🧑‍🎓"
+      title="Students"
+      desc="Access clear explanations of complex chemistry concepts with visual aids and interactive examples."
+    />
+    <PersonaCard
+      icon="🔬"
+      title="Researchers"
+      desc="Accelerate your discovery process with AI-driven retrosynthesis planning and molecular analysis."
+    />
+    <PersonaCard
+      icon="🏫"
+      title="Educators"
+      desc="Enhance your teaching with interactive visualizations and ready-to-use chemistry examples."
+    />
+    <PersonaCard
+      icon="👨‍🔬"
+      title="Professionals"
+      desc="Streamline workflows with powerful tools for spectroscopy analysis and chemical data research."
+    />
+    <PersonaCard
+      icon="🧑‍🔧"
+      title="Hobbyists"
+      desc="Unlock the world of chemistry for personal projects, experiments, and learning at your own pace."
+    />
+    <PersonaCard
+      icon="🚀"
+      title="Startups"
+      desc="Apply R&D AI-enhanced chemistry tools for innovation and product development."
+    />
+  </div>
+</section>
+
+      
       {/* ... */}
 
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
