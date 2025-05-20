@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // <-- For Next.js 13+ App Router
+
 import FeatureCard from "@/components/FeatureCard";
 import PersonaCard from "@/components/PersonaCard";
 import RoadmapStep from "@/components/RoadmapStep";
@@ -8,7 +10,7 @@ import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
 
-// Suggestions for the chatbar
+// --- Suggestions for Ask bar
 const suggestions = [
   "What is the structure of aspirin?",
   "Show me the IR spectrum of benzene",
@@ -17,33 +19,39 @@ const suggestions = [
 ];
 
 export default function HomePage() {
-  // State
+  // --- State for chatbar input
   const [query, setQuery] = useState("");
+  // --- State for waitlist email input (bottom CTA)
   const [email, setEmail] = useState("");
 
-  // Handlers
+  // --- Next.js Router (App Router version)
+  const router = useRouter();
+
+  // --- Handle typing in the chatbar
   const handleInputChange = (e) => setQuery(e.target.value);
+
+  // --- On Enter, run the search
   const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch(query);
+    if (e.key === "Enter") handleSearch();
   };
 
-  // Single handleSearch (accepts optional customQuery)
+  // --- Run search: redirect to /chat with the query
   const handleSearch = (customQuery) => {
     const q = customQuery !== undefined ? customQuery : query;
     if (q.trim() !== "") {
-      // Replace alert with router push or your search logic!
-      alert(`You searched for: ${q}`);
+      router.push(`/chat?query=${encodeURIComponent(q)}`);
     }
   };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
-      {/* 1. Header/Navbar */}
+
+      {/* === 1. Sticky Header / Navbar === */}
       <header className="sticky top-0 z-50 w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white/90 backdrop-blur">
         <Link href="/" className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">
           <span className="mr-1">🧪</span> ChemGPT
         </Link>
-        {/* Desktop Nav */}
+        {/* --- Desktop Navigation --- */}
         <nav className="hidden md:flex items-center gap-6 text-base font-medium">
           <Link href="#features" className="hover:text-violet-700 transition">Features</Link>
           <Link href="#who" className="hover:text-violet-700 transition">For Who</Link>
@@ -56,11 +64,11 @@ export default function HomePage() {
             Get Early Access
           </Link>
         </nav>
-        {/* Mobile Hamburger */}
+        {/* --- Mobile Hamburger Nav --- */}
         <MobileNav />
       </header>
 
-      {/* 2. Hero Section */}
+      {/* === 2. Hero Section with Ask Bar & Suggestions === */}
       <section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
           The <span className="text-violet-700">AI-Powered Platform</span> for <span className="text-cyan-500">Chemistry</span>
@@ -68,7 +76,7 @@ export default function HomePage() {
         <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
           Combining AI models, molecular visualization, and educational tools for students, researchers, and professionals in chemistry.
         </p>
-        {/* Ask Bar */}
+        {/* --- Ask Bar with Shadowed Border --- */}
         <div className="w-full max-w-xl mb-6 px-2">
           <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
             <input
@@ -80,13 +88,13 @@ export default function HomePage() {
               className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
             <button
-              onClick={() => handleSearch(query)}
+              onClick={() => handleSearch()}
               className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
             >
               Ask
             </button>
           </div>
-          {/* Suggestions */}
+          {/* --- Suggestions under Ask Bar --- */}
           <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
             {suggestions.map((s, i) => (
               <button
@@ -100,13 +108,15 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-        {/* Hashtags */}
+
+        {/* --- Hashtags Row --- */}
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
           <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#ChemistryAI</span>
           <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#MoleculeViz</span>
           <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#Retrosynthesis</span>
         </div>
-        {/* Demo Image */}
+
+        {/* --- Demo/Preview Image --- */}
         <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
           <img
             src="/demo-molecule.png"
@@ -122,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. Powerful AI-Driven Features */}
+      {/* === 3. Features Grid === */}
       <section id="features" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-white">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
           Powerful <span className="text-violet-700">AI-Driven</span> Features
@@ -142,7 +152,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Who ChemGPT Is For */}
+      {/* === 4. Who ChemGPT Is For === */}
       <section id="who" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-slate-50">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
           Who <span className="text-cyan-600">ChemGPT</span> Is For
@@ -160,7 +170,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Development Roadmap */}
+      {/* === 5. Development Roadmap === */}
       <section id="roadmap" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-white">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
           Development <span className="text-violet-700">Roadmap</span>
@@ -179,7 +189,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. Frequently Asked Questions */}
+      {/* === 6. FAQ Section === */}
       <section id="faq" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-slate-50">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
           Frequently Asked <span className="text-cyan-600">Questions</span>
@@ -192,7 +202,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. Join Our Community */}
+      {/* === 7. Community Section === */}
       <section className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-white">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
           Join Our <span className="text-violet-700">Community</span>
@@ -207,7 +217,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. Final Call to Action */}
+      {/* === 8. Final Call to Action === */}
       <section className="w-full flex flex-col items-center py-16 px-4 bg-gradient-to-br from-violet-50 to-cyan-50">
         <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-center">
           Ready to Transform Your <span className="text-cyan-600">Chemistry Work</span>?
@@ -238,8 +248,9 @@ export default function HomePage() {
         </form>
       </section>
 
+      {/* === Footer === */}
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} ChemGPT. All rights reserved. <span className="ml-2">by MERAS ZIAD</span>
+        © {new Date().getFullYear()} ChemGPT. All rights reserved. <span className="ml-2">for the chemistry community</span>
       </footer>
     </div>
   );
