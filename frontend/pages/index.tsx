@@ -88,7 +88,7 @@ export default function HomePage() {
               className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
             <button
-              onClick={() => handleSearch()}
+              onClick={() => handleSearch(undefined)}
               className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
             >
               Ask
