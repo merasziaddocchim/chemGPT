@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import FeatureCard from "@/components/FeatureCard";
 
 // Optional: Import your card/UI components or use plain divs for now
 
