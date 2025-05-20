@@ -275,7 +275,35 @@ export default function HomePage() {
     />
   </div>
 </section>
-    
+    {/* 8. Final Call to Action */}
+<section className="w-full flex flex-col items-center py-16 px-4 bg-gradient-to-br from-violet-50 to-cyan-50">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-center">
+    Ready to Transform Your <span className="text-cyan-600">Chemistry Work</span>?
+  </h2>
+  <p className="text-lg text-gray-700 text-center mb-6 max-w-2xl">
+    Join the waiting list to get early access when we launch. Be among the first to experience the future of chemistry tools.
+  </p>
+  <form
+    action="https://your-waitlist-provider.com"
+    method="POST"
+    className="flex flex-col md:flex-row gap-4 w-full max-w-md"
+  >
+    <input
+      type="email"
+      name="email"
+      required
+      placeholder="Enter your email"
+      className="flex-grow px-4 py-3 rounded-lg border border-gray-300 shadow bg-white text-gray-900 focus:outline-none"
+    />
+    <button
+      type="submit"
+      className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white font-bold shadow transition"
+    >
+      Get Early Access
+    </button>
+  </form>
+</section>
+
       {/* ... */}
 
       <footer className="py-8 mt-16 text-center text-xs text-gray-400">
