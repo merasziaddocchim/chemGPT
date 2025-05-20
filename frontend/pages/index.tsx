@@ -184,6 +184,48 @@ export default function HomePage() {
   </div>
 </section>
 
+
+      {/* 5. Development Roadmap */}
+<section id="roadmap" className="w-full flex flex-col items-center py-16 px-4 bg-white">
+  <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">
+    Development <span className="text-violet-700">Roadmap</span>
+  </h2>
+  <p className="text-lg text-gray-600 text-center mb-10 max-w-2xl">
+    Follow our journey as we build and enhance ChemGPT with new features and capabilities.
+  </p>
+  <div className="max-w-2xl w-full flex flex-col gap-0 relative">
+    {/* Timeline line */}
+    <div className="absolute left-5 top-8 bottom-8 w-1 bg-violet-100 rounded-full z-0" aria-hidden="true"></div>
+    {/* Phases */}
+    <RoadmapStep
+      date="April–May 2025"
+      phase="Phase 1 (Complete)"
+      title="Foundation & Chat Interface"
+      desc="Basic platform structure, AI chat with chemistry knowledge, and frontend/backend integration."
+      complete
+    />
+    <RoadmapStep
+      date="May–June 2025"
+      phase="Phase 2 (Current)"
+      title="Molecule Visualization & Retrosynthesis"
+      desc="3D molecular visualization tool and AI-powered retrosynthesis planning capabilities."
+    />
+    <RoadmapStep
+      date="June–July 2025"
+      phase="Phase 3 (Upcoming)"
+      title="Spectroscopy & User Profiles"
+      desc="Spectroscopy analysis tools (NMR, IR, MS) and user authentication with saved history."
+    />
+    <RoadmapStep
+      date="August 2025"
+      phase="Phase 4 (Planned)"
+      title="Advanced Features & Mobile Support"
+      desc="Multi-language support, mobile-friendly interface, and premium features for subscribers."
+    />
+  </div>
+</section>
+
+
       
       {/* ... */}
 
