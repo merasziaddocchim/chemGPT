@@ -7,6 +7,7 @@ import PersonaCard from "@/components/PersonaCard";
 import RoadmapStep from "@/components/RoadmapStep";
 import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
+import MobileNav from "@/components/MobileNav";
 
 // Optional: Import your card/UI components or use plain divs for now
 
@@ -25,24 +26,32 @@ export default function HomePage() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
       {/* 1. Header/Navbar */}
-      <header className="w-full py-6 px-6 flex justify-between items-center">
-        <Link href="/" className="font-extrabold text-2xl text-violet-700 tracking-tight">
-          <span className="mr-1">🧪</span> ChemGPT
-        </Link>
-        <nav className="flex items-center gap-6 text-base font-medium">
-          <Link href="#features" className="hover:text-violet-700 transition">Features</Link>
-          <Link href="#who" className="hover:text-violet-700 transition">For Who</Link>
-          <Link href="#roadmap" className="hover:text-violet-700 transition">Roadmap</Link>
-          <Link href="#faq" className="hover:text-violet-700 transition">FAQ</Link>
-          <Link
-            href="/register"
-            className="ml-4 bg-violet-600 hover:bg-violet-700 text-white px-5 py-2 rounded-lg font-bold shadow"
-          >
-            Get Early Access
-          </Link>
-        </nav>
-      </header>
 
+      
+      <header className="w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white z-20">
+  <Link href="/" className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">
+    <span className="mr-1">🧪</span> ChemGPT
+  </Link>
+  {/* Desktop Nav */}
+  <nav className="hidden md:flex items-center gap-6 text-base font-medium">
+    <Link href="#features" className="hover:text-violet-700 transition">Features</Link>
+    <Link href="#who" className="hover:text-violet-700 transition">For Who</Link>
+    <Link href="#roadmap" className="hover:text-violet-700 transition">Roadmap</Link>
+    <Link href="#faq" className="hover:text-violet-700 transition">FAQ</Link>
+    <Link
+      href="/register"
+      className="ml-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-bold shadow transition"
+    >
+      Get Early Access
+    </Link>
+  </nav>
+  {/* Mobile Hamburger */}
+  <MobileNav />
+</header>
+
+
+
+      
       {/* 2. Hero Section */}
       <section className="flex flex-col items-center justify-center pt-10 pb-8">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
