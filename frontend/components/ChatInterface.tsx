@@ -22,39 +22,38 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   const [input, setInput] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // --- Scroll to bottom on new message ---
+  // --- Scroll to bottom when messages update ---
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // --- Auto send initialQuery if present from landing page ---
+  // --- Auto send initialQuery if present (only ONCE) ---
   useEffect(() => {
     if (initialQuery) {
+      // Only send if no previous messages
       setMessages([{ role: "user", content: initialQuery }]);
-      setInput("");
-      handleSend(initialQuery);
+      fetchAnswer(initialQuery);
     }
     // eslint-disable-next-line
   }, [initialQuery]);
 
-  // --- Send Handler ---
-  async function handleSend(q?: string | FormEvent) {
-    let queryText: string;
-    if (typeof q === "string") {
-      queryText = q;
-    } else {
-      if (q) q.preventDefault();
-      queryText = input.trim();
-    }
-    if (!queryText) return;
-    setMessages((msgs) => [...msgs, { role: "user", content: queryText }]);
+  // --- Send Handler (user input) ---
+  async function handleSend(e?: FormEvent) {
+    if (e) e.preventDefault();
+    const query = input.trim();
+    if (!query) return;
+    setMessages((msgs) => [...msgs, { role: "user", content: query }]);
     setInput("");
-    // --- API Call (update endpoint if needed) ---
+    fetchAnswer(query);
+  }
+
+  // --- Fetch Answer from backend ---
+  async function fetchAnswer(query: string) {
     try {
       const res = await fetch("https://chemgpt-pro.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: queryText }),
+        body: JSON.stringify({ question: query }),
       });
       const data = await res.json();
       setMessages((msgs) => [
@@ -75,7 +74,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   }
 
   return (
-    <div className="flex flex-col w-full max-w-2xl mx-auto min-h-[75vh] sm:min-h-[80vh] bg-white/90 rounded-2xl shadow-2xl px-2 py-8 relative overflow-hidden">
+    <div className="flex flex-col w-full max-w-2xl mx-auto h-[75vh] sm:h-[80vh] bg-white/90 rounded-2xl shadow-xl px-2 py-8 relative overflow-hidden">
       {/* --- Messages Section --- */}
       <div className="flex-1 overflow-y-auto px-1 pb-32">
         {messages.length === 0 && (
@@ -89,21 +88,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`
-                mb-4 px-4 py-3 max-w-[85%] text-base shadow-md
-                prose prose-slate
+              className={`mb-4 px-4 py-3 max-w-[85%] text-base shadow-md prose prose-slate
                 ${msg.role === "user"
-                  ? "bg-cyan-500 text-white rounded-xl rounded-br-sm self-end"
-                  : "bg-white text-gray-900 border border-violet-100 rounded-xl rounded-bl-sm self-start"
-                }
-              `}
+                    ? "bg-cyan-500 text-white rounded-xl rounded-br-sm self-end"
+                    : "bg-violet-50 text-gray-900 border border-violet-100 rounded-xl rounded-bl-sm self-start"
+                }`}
             >
               {/* --- Render with Markdown and LaTeX support --- */}
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
                 components={{
-                  code({node, inline, className, children, ...props}) {
+                  code({ node, inline, className, children, ...props }) {
                     return (
                       <code
                         className={
