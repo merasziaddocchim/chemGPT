@@ -8,10 +8,10 @@ export default function ChatPage() {
   const [initialQuery, setInitialQuery] = useState<string>('');
 
   useEffect(() => {
-    if (typeof router.query.question === "string") {
-      setInitialQuery(router.query.question);
+    if (typeof router.query.query === "string") {
+      setInitialQuery(router.query.query as string);
     }
-  }, [router.query.question]);
+  }, [router.query.query]);
 
   return (
     <Layout>
