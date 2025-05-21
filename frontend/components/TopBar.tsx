@@ -43,4 +43,3 @@ export default function TopBar({ onSidebarClick }: { onSidebarClick?: () => void
     </div>
   );
 }
-export default TopBar;
