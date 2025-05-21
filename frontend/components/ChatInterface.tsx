@@ -95,25 +95,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
             >
               {/* --- Render with Markdown and LaTeX support --- */}
               <ReactMarkdown
-                children={msg.content}
-                remarkPlugins={[remarkMath]}
-                rehypePlugins={[rehypeKatex]}
-                components={{
-                  code({node, inline, className, children, ...props}) {
-                    return (
-                      <code
-                        className={
-                          "bg-gray-200 px-1 rounded text-[0.95em] " + (className || "")
-                        }
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    );
-                  },
-                  // You can style blockquotes, tables, etc. here if you want
-                }}
-              />
+  remarkPlugins={[remarkMath]}
+  rehypePlugins={[rehypeKatex]}
+  components={{
+    code({node, inline, className, children, ...props}) {
+      return (
+        <code
+          className={
+            "bg-gray-200 px-1 rounded text-[0.95em] " + (className || "")
+          }
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    },
+  }}
+>
+  {msg.content}
+</ReactMarkdown>
+
             </div>
           </div>
         ))}
