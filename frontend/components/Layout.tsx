@@ -1,4 +1,6 @@
-import React, { ReactNode, useState } from "react";
+// frontend/components/Layout.tsx
+"use client";
+import React, { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
 
@@ -15,12 +17,18 @@ const sidebarLinks = [
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState("");
+
+  // This avoids SSR "window is not defined" error:
+  useEffect(() => {
+    setCurrentPath(window.location.pathname);
+  }, []);
 
   const NavLink = ({ href, icon, label }: { href: string; icon: string; label: string }) => (
-    <Link href={href}>
-      <div
+    <Link href={href} legacyBehavior>
+      <a
         className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-base font-medium transition
-          ${window.location.pathname === href
+          ${currentPath === href
             ? "bg-violet-100 text-violet-700 shadow"
             : "text-gray-700 hover:bg-violet-50 hover:text-violet-700"
           }`}
@@ -28,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       >
         <span className="text-xl">{icon}</span>
         <span>{label}</span>
-      </div>
+      </a>
     </Link>
   );
 
@@ -82,7 +90,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="flex-1 flex flex-col min-h-screen w-full md:px-0 bg-gradient-to-br from-white via-slate-50 to-white">
         {/* TopBar for mobile */}
         <div className="md:hidden">
-          <TopBar onSidebarClick={() => setMobileOpen(true)} />
+          <TopBar />
+          {/* Add menu button for mobile */}
+          <button
+            className="absolute top-4 left-4 z-50 w-10 h-10 flex items-center justify-center rounded-lg hover:bg-violet-50 transition md:hidden"
+            aria-label="Open menu"
+            onClick={() => setMobileOpen(true)}
+          >
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
         {/* Page content */}
         <div className="flex-1 flex flex-col w-full">{children}</div>
