@@ -18,40 +18,43 @@ interface ChatInterfaceProps {
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   // --- State Management ---
-  const [messages, setMessages] = useState<Message[]>(
-    initialQuery
-      ? [{ role: "user", content: initialQuery }]
-      : []
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // --- Scroll to bottom when messages update ---
+  // --- Scroll to bottom on new message ---
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // --- Auto send initialQuery if present ---
+  // --- Auto send initialQuery if present from landing page ---
   useEffect(() => {
-    if (initialQuery && messages.length === 1) {
-      handleSend();
+    if (initialQuery) {
+      setMessages([{ role: "user", content: initialQuery }]);
+      setInput("");
+      handleSend(initialQuery);
     }
     // eslint-disable-next-line
   }, [initialQuery]);
 
   // --- Send Handler ---
-  async function handleSend(e?: FormEvent) {
-    if (e) e.preventDefault();
-    const query = input.trim() || (messages.length === 1 && messages[0].content);
-    if (!query) return;
-    setMessages((msgs) => [...msgs, { role: "user", content: query as string }]);
+  async function handleSend(q?: string | FormEvent) {
+    let queryText: string;
+    if (typeof q === "string") {
+      queryText = q;
+    } else {
+      if (q) q.preventDefault();
+      queryText = input.trim();
+    }
+    if (!queryText) return;
+    setMessages((msgs) => [...msgs, { role: "user", content: queryText }]);
     setInput("");
-    // --- API Call (edit endpoint as needed) ---
+    // --- API Call (update endpoint if needed) ---
     try {
       const res = await fetch("https://chemgpt-pro.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: query }),
+        body: JSON.stringify({ question: queryText }),
       });
       const data = await res.json();
       setMessages((msgs) => [
@@ -72,7 +75,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   }
 
   return (
-    <div className="flex flex-col w-full max-w-2xl mx-auto h-[75vh] sm:h-[80vh] bg-white/90 rounded-2xl shadow-xl px-2 py-8 relative overflow-hidden">
+    <div className="flex flex-col w-full max-w-2xl mx-auto min-h-[75vh] sm:min-h-[80vh] bg-white/90 rounded-2xl shadow-2xl px-2 py-8 relative overflow-hidden">
       {/* --- Messages Section --- */}
       <div className="flex-1 overflow-y-auto px-1 pb-32">
         {messages.length === 0 && (
@@ -86,35 +89,36 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`mb-4 px-4 py-3 max-w-[85%] text-base shadow-md prose prose-slate dark:prose-invert
-                ${
-                  msg.role === "user"
-                    ? "bg-cyan-500 text-white rounded-xl rounded-br-sm self-end"
-                    : "bg-violet-50 text-gray-900 border border-violet-100 rounded-xl rounded-bl-sm self-start"
-                }`}
+              className={`
+                mb-4 px-4 py-3 max-w-[85%] text-base shadow-md
+                prose prose-slate
+                ${msg.role === "user"
+                  ? "bg-cyan-500 text-white rounded-xl rounded-br-sm self-end"
+                  : "bg-white text-gray-900 border border-violet-100 rounded-xl rounded-bl-sm self-start"
+                }
+              `}
             >
               {/* --- Render with Markdown and LaTeX support --- */}
               <ReactMarkdown
-  remarkPlugins={[remarkMath]}
-  rehypePlugins={[rehypeKatex]}
-  components={{
-    code({node, inline, className, children, ...props}) {
-      return (
-        <code
-          className={
-            "bg-gray-200 px-1 rounded text-[0.95em] " + (className || "")
-          }
-          {...props}
-        >
-          {children}
-        </code>
-      );
-    },
-  }}
->
-  {msg.content}
-</ReactMarkdown>
-
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={{
+                  code({node, inline, className, children, ...props}) {
+                    return (
+                      <code
+                        className={
+                          "bg-gray-200 px-1 rounded text-[0.95em] " + (className || "")
+                        }
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {msg.content}
+              </ReactMarkdown>
             </div>
           </div>
         ))}
