@@ -5,50 +5,39 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-// --- Message Type ---
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-// --- Props for initial question support ---
 interface ChatInterfaceProps {
   initialQuery?: string;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
-  // --- State Management ---
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(
+    initialQuery ? [{ role: "user", content: initialQuery }] : []
+  );
   const [input, setInput] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // --- Scroll to bottom when messages update ---
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // --- Auto send initialQuery if present (only ONCE) ---
   useEffect(() => {
-    if (initialQuery) {
-      // Only send if no previous messages
-      setMessages([{ role: "user", content: initialQuery }]);
-      fetchAnswer(initialQuery);
+    if (initialQuery && messages.length === 1) {
+      handleSend();
     }
     // eslint-disable-next-line
   }, [initialQuery]);
 
-  // --- Send Handler (user input) ---
   async function handleSend(e?: FormEvent) {
     if (e) e.preventDefault();
-    const query = input.trim();
+    const query = input.trim() || (messages.length === 1 && messages[0].content);
     if (!query) return;
-    setMessages((msgs) => [...msgs, { role: "user", content: query }]);
+    setMessages((msgs) => [...msgs, { role: "user", content: query as string }]);
     setInput("");
-    fetchAnswer(query);
-  }
-
-  // --- Fetch Answer from backend ---
-  async function fetchAnswer(query: string) {
     try {
       const res = await fetch("https://chemgpt-pro.onrender.com/chat", {
         method: "POST",
@@ -68,14 +57,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
     }
   }
 
-  // --- Enter Key Handler ---
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && !e.shiftKey) handleSend();
   }
 
   return (
-    <div className="flex flex-col w-full max-w-2xl mx-auto h-[75vh] sm:h-[80vh] bg-white/90 rounded-2xl shadow-xl px-2 py-8 relative overflow-hidden">
-      {/* --- Messages Section --- */}
+    <div className="flex flex-col w-full max-w-2xl mx-auto min-h-[72vh] sm:min-h-[80vh] bg-white/90 rounded-2xl shadow-xl px-2 py-8 mt-4 mb-8 relative overflow-hidden">
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-1 pb-32">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 mt-12">
@@ -89,17 +77,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
           >
             <div
               className={`mb-4 px-4 py-3 max-w-[85%] text-base shadow-md prose prose-slate
-                ${msg.role === "user"
+                ${
+                  msg.role === "user"
                     ? "bg-cyan-500 text-white rounded-xl rounded-br-sm self-end"
                     : "bg-violet-50 text-gray-900 border border-violet-100 rounded-xl rounded-bl-sm self-start"
                 }`}
             >
-              {/* --- Render with Markdown and LaTeX support --- */}
               <ReactMarkdown
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
                 components={{
-                  code({ node, inline, className, children, ...props }) {
+                  code({node, inline, className, children, ...props}) {
                     return (
                       <code
                         className={
@@ -121,7 +109,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
         <div ref={bottomRef} />
       </div>
 
-      {/* --- Input Bar Section --- */}
+      {/* Input */}
       <form
         className="absolute bottom-0 left-0 w-full flex justify-center bg-gradient-to-t from-white via-slate-50 to-transparent px-2 pb-4 pt-3"
         onSubmit={handleSend}
