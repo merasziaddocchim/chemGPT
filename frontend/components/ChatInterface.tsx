@@ -48,7 +48,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
     setInput("");
 
     try {
-      const res = await fetch("https://chemgpt-pro.onrender.com/chat", {
+      const res = await fetch("https://f8ebeaa5-e799-4eb4-af45-b2377068e174.railway.app/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: query }),
