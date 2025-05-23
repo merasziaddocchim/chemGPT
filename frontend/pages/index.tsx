@@ -63,7 +63,7 @@ export default function HomePage() {
           The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
         </h1>
         <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
-          Built to solve 2026's biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
+          Built to solve 2026&rsquo;s biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
         </p>
         <div className="w-full max-w-xl mb-6 px-2">
           <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
