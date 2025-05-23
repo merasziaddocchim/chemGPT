@@ -10,14 +10,14 @@ import 'katex/dist/katex.min.css';
 
 export default function RetroPage() {
   const [smiles, setSmiles] = useState('');
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handlePredict() {
     setLoading(true);
     setError('');
-    setResult('');
+    setResult(null);
     try {
       const res = await fetch('https://chemgpt-pro.onrender.com/retrosynthesis', {
         method: 'POST',
@@ -26,7 +26,7 @@ export default function RetroPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setResult(data.message || 'No result.');
+        setResult(data); // Save the full JSON object!
       } else {
         setError(data.answer || 'Unknown server error.');
       }
@@ -83,13 +83,41 @@ export default function RetroPage() {
             {result && !error && (
               <div className="bg-[#18181b] border border-gray-700 rounded-xl p-4 mt-2">
                 <div className="font-semibold text-cyan-400 mb-2">🧪 Prediction Result</div>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
-                  className="prose prose-invert max-w-none text-white"
-                >
-                  {result}
-                </ReactMarkdown>
+                <div className="mb-2 text-white">
+                  <div>
+                    <span className="font-bold">Target:</span> {result.target_name}
+                  </div>
+                  <div>
+                    <span className="font-bold">SMILES:</span>{' '}
+                    <code>{result.target_smiles}</code>
+                  </div>
+                  <div className="text-cyan-300 mt-2 text-sm">
+                    <span className="font-semibold">Input:</span> <code>{result.input}</code>
+                  </div>
+                </div>
+                <div className="mb-2 text-cyan-200 font-semibold mt-4">Steps:</div>
+                <ol className="list-decimal list-inside text-white mb-3">
+                  {result.steps && result.steps.map((step: any, idx: number) => (
+                    <li key={idx} className="mb-2">
+                      <div className="font-bold text-cyan-400">Step {step.step}:</div>
+                      <div className="mb-1">{step.description}</div>
+                      <div className="ml-4">
+                        <div className="text-cyan-300 font-semibold">Precursors:</div>
+                        <ul className="list-disc ml-6">
+                          {step.precursors && step.precursors.map((precursor: any, i: number) => (
+                            <li key={i}>
+                              <span className="font-medium">{precursor.name}</span>{' '}
+                              <code>{precursor.smiles}</code>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <div className="mt-4 italic text-cyan-500">
+                  {result.message}
+                </div>
               </div>
             )}
           </div>
