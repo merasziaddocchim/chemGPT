@@ -15,29 +15,38 @@ interface ChatInterfaceProps {
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
-  const [messages, setMessages] = useState<Message[]>(
-    initialQuery ? [{ role: "user", content: initialQuery }] : []
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const hasSentInitialQuery = useRef(false);
 
+  // Auto-scroll on new message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle initialQuery on mount/when it changes (only fire once)
   useEffect(() => {
-    if (initialQuery && messages.length === 1) {
-      handleSend();
+    if (initialQuery && !hasSentInitialQuery.current) {
+      hasSentInitialQuery.current = true;
+      handleSend(undefined, initialQuery);
     }
     // eslint-disable-next-line
   }, [initialQuery]);
 
-  async function handleSend(e?: FormEvent) {
+  async function handleSend(
+    e?: FormEvent,
+    customInput?: string // For auto-sending initialQuery
+  ) {
     if (e) e.preventDefault();
-    const query = input.trim() || (messages.length === 1 && messages[0].content);
+    const query = customInput !== undefined
+      ? customInput
+      : input.trim();
     if (!query) return;
-    setMessages((msgs) => [...msgs, { role: "user", content: query as string }]);
+
+    setMessages((msgs) => [...msgs, { role: "user", content: query }]);
     setInput("");
+
     try {
       const res = await fetch("https://chemgpt-pro.onrender.com/chat", {
         method: "POST",
