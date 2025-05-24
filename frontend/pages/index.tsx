@@ -101,17 +101,16 @@ export default function HomePage() {
           <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
         </div>
         <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
-          <img
-            src="/demo-molecule.png"
-            alt="ChemGPT Visualization Demo"
-            className="mx-auto mb-3 w-full max-w-xs sm:max-w-md rounded-xl shadow"
-            onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/300x180?text=Molecule+Demo'; }}
-          />
-          <div className="flex justify-end w-full">
-            <button className="text-xs text-gray-400 hover:underline flex items-center gap-1">
-              <span>Export as JPEG</span>
-            </button>
-          </div>
+          <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
+  <AnimatedMolecules />
+  {/* Optional: keep export button, etc. */}
+  <div className="flex justify-end w-full">
+    <button className="text-xs text-gray-400 hover:underline flex items-center gap-1">
+      <span>Export as JPEG</span>
+    </button>
+  </div>
+</div>
+
         </div>
       </section>
 
