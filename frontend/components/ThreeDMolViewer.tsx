@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from "react";
 
 interface ThreeDMolViewerProps {
-  // You can pass different molecule data (as a string in SDF, MOL, or PDB format)
   moleculeData?: string;
 }
 
@@ -21,10 +20,8 @@ const ThreeDMolViewer: React.FC<ThreeDMolViewerProps> = ({ moleculeData }) => {
   const viewerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only run on client
     if (typeof window === "undefined") return;
 
-    // Dynamically load 3Dmol.js if it doesn't exist
     if (!(window as any).$3Dmol) {
       const script = document.createElement("script");
       script.src = "/vendor/3Dmol-min.js";
@@ -54,3 +51,17 @@ const ThreeDMolViewer: React.FC<ThreeDMolViewerProps> = ({ moleculeData }) => {
   return (
     <div
       ref={viewerRef}
+      style={{
+        width: "400px",
+        height: "320px",
+        borderRadius: "18px",
+        border: "1px solid #eee",
+        margin: "auto",
+        background: "#fafaff",
+        boxShadow: "0 4px 24px rgba(110, 70, 255, 0.08)"
+      }}
+    />
+  );
+};
+
+export default ThreeDMolViewer;
