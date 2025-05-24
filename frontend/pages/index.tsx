@@ -10,6 +10,7 @@ import RoadmapStep from "@/components/RoadmapStep";
 import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
+import AnimatedMolecules from "@/components/AnimatedMolecules";
 
 // --- Updated suggestions
 const suggestions = [
