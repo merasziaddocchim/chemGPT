@@ -50,17 +50,18 @@ const ThreeDMolViewer: React.FC<ThreeDMolViewerProps> = ({ moleculeData }) => {
 
   return (
     <div
-      ref={viewerRef}
-      style={{
-        width: "400px",
-        height: "320px",
-        borderRadius: "18px",
-        border: "1px solid #eee",
-        margin: "auto",
-        background: "#fafaff",
-        boxShadow: "0 4px 24px rgba(110, 70, 255, 0.08)"
-      }}
-    />
+  ref={viewerRef}
+  style={{
+    width: "220px",
+    height: "180px",
+    maxWidth: "100%",
+    borderRadius: "18px",
+    border: "1px solid #eee",
+    margin: "auto",
+    background: "#fafaff",
+    boxShadow: "0 4px 24px rgba(110, 70, 255, 0.08)"
+  }}
+/>
   );
 };
 
