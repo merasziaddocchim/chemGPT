@@ -75,54 +75,58 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
-          The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
-        </h1>
-        <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
-          Built to solve 2026&rsquo;s biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
-        </p>
-        <div className="w-full max-w-xl mb-6 px-2">
-          <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
-            <input
-              type="text"
-              placeholder="Ask ChemGPT about reactions, drug synthesis, spectra…"
-              value={query}
-              onChange={handleInputChange}
-              onKeyDown={handleInputKeyDown}
-              className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
-            />
-            <button
-              onClick={() => handleSearch()}
-              className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
-            >
-              Ask
-            </button>
-          </div>
-          <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
-            {suggestions.map((s, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleSearch(s)}
-                className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* Hashtags */}
-        <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#DrugDesign</span>
-          <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
-          <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
-        </div>
-        {/* 3D Benzene Ring */}
-        <div className="mb-8 flex items-center justify-center w-full">
-          <ThreeDMolViewer moleculeData={BENZENE_PDB} />
-        </div>
-      </section>
+{/* Hero Section */}
+<section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
+  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
+    The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
+  </h1>
+  <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
+    Built to solve 2026&rsquo;s biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
+  </p>
+  <div className="w-full max-w-xl mb-6 px-2">
+    <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
+      <input
+        type="text"
+        placeholder="Ask ChemGPT about reactions, drug synthesis, spectra…"
+        value={query}
+        onChange={handleInputChange}
+        onKeyDown={handleInputKeyDown}
+        className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
+      />
+      <button
+        onClick={() => handleSearch()}
+        className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+      >
+        Ask
+      </button>
+    </div>
+    <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
+      {suggestions.map((s, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => handleSearch(s)}
+          className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  </div>
+  
+  {/* Hashtags */}
+  <div className="flex flex-wrap gap-2 mb-6 justify-center">
+    <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#DrugDesign</span>
+    <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
+    <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
+  </div>
+  
+  {/* 3D Benzene Ring - Properly contained and positioned */}
+  <div className="mb-8 flex items-center justify-center w-full max-w-md">
+    <ThreeDMolViewer moleculeData={BENZENE_PDB} />
+  </div>
+</section>
+
 
       {/* Features */}
       <section id="features" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-white">
