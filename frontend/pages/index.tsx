@@ -21,6 +21,23 @@ const suggestions = [
   "Visualize a molecule and predict its properties",
 ];
 
+const BENZENE_PDB = `
+HETATM    1  C1  BEN A   1      -0.667   1.151    0.000
+HETATM    2  C2  BEN A   1      -1.334   0.000    0.000
+HETATM    3  C3  BEN A   1      -0.667  -1.151    0.000
+HETATM    4  C4  BEN A   1       0.667  -1.151    0.000
+HETATM    5  C5  BEN A   1       1.334   0.000    0.000
+HETATM    6  C6  BEN A   1       0.667   1.151    0.000
+CONECT    1    2    6
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    1
+END
+`;
+
+
 export default function HomePage() {
   const [query, setQuery] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -59,58 +76,53 @@ export default function HomePage() {
         <MobileNav />
       </header>
 
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
-          The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
-        </h1>
-        <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
-          Built to solve 2026&rsquo;s biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
-        </p>
-        <div className="w-full max-w-xl mb-6 px-2">
-          <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
-            <input
-              type="text"
-              placeholder="Ask ChemGPT about reactions, drug synthesis, spectra…"
-              value={query}
-              onChange={handleInputChange}
-              onKeyDown={handleInputKeyDown}
-              className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
-            />
-            <button
-              onClick={() => handleSearch()}
-              className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
-            >
-              Ask
-            </button>
-          </div>
-          <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
-            {suggestions.map((s, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleSearch(s)}
-                className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#DrugDesign</span>
-          <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
-          <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
-        </div>
-        <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
-          <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
-  <AnimatedMolecules />
-  {/* Optional: keep export button, etc. */}
-  
-</div>
-
-        </div>
-      </section>
+{/* Hero Section */}
+<section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
+  <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
+    The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
+  </h1>
+  <p className="text-lg md:text-xl text-center max-w-2xl mb-6 text-gray-600">
+    Built to solve 2026&rsquo;s biggest chemistry challenges: making AI explainable, workflows efficient, and R&D radically faster. For students, researchers, and professionals.
+  </p>
+  <div className="w-full max-w-xl mb-6 px-2">
+    <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-xl border border-gray-300 shadow-lg p-2">
+      <input
+        type="text"
+        placeholder="Ask ChemGPT about reactions, drug synthesis, spectra…"
+        value={query}
+        onChange={handleInputChange}
+        onKeyDown={handleInputKeyDown}
+        className="flex-grow p-3 rounded-lg text-black border-none focus:outline-none focus:ring-2 focus:ring-cyan-400"
+      />
+      <button
+        onClick={() => handleSearch()}
+        className="w-full sm:w-auto px-4 py-2 bg-cyan-500 rounded-lg text-white hover:bg-cyan-600"
+      >
+        Ask
+      </button>
+    </div>
+    <div className="w-full flex flex-wrap gap-2 mt-2 justify-center">
+      {suggestions.map((s, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => handleSearch(s)}
+          className="bg-cyan-50 text-cyan-700 hover:bg-cyan-100 hover:underline px-3 py-1 rounded-full text-xs font-semibold transition"
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  </div>
+  <div className="flex flex-wrap gap-2 mb-6 justify-center">
+    <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full font-semibold text-xs">#DrugDesign</span>
+    <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
+    <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
+  </div>
+  <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
+    <ThreeDMolViewer moleculeData={BENZENE_PDB} />
+  </div>
+</section>
 
       {/* Features */}
       <section id="features" className="w-full max-w-screen-xl mx-auto flex flex-col items-center py-16 px-4 bg-white">
