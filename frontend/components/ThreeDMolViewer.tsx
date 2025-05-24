@@ -1,60 +1,56 @@
-"use client";
+// frontend/components/ThreeDMolViewer.tsx
+
 import React, { useEffect, useRef } from "react";
 
-const MOL_DATA = `
-  Benzene
-  OpenAI
+interface ThreeDMolViewerProps {
+  // You can pass different molecule data (as a string in SDF, MOL, or PDB format)
+  moleculeData?: string;
+}
 
-  6  6  0  0  0  0            999 V2000
-    1.3960    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    0.6980    1.2094    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-   -0.6980    1.2094    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-   -1.3960    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-   -0.6980   -1.2094    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-    0.6980   -1.2094    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
-  1  2  2  0  0  0  0
-  2  3  1  0  0  0  0
-  3  4  2  0  0  0  0
-  4  5  1  0  0  0  0
-  5  6  2  0  0  0  0
-  6  1  1  0  0  0  0
-M  END
+const DEFAULT_PDB = `
+ATOM      1  C1  BEN A   1       0.000   1.396   0.000  1.00  0.00           C  
+ATOM      2  C2  BEN A   1      -1.209   0.698   0.000  1.00  0.00           C  
+ATOM      3  C3  BEN A   1      -1.209  -0.698   0.000  1.00  0.00           C  
+ATOM      4  C4  BEN A   1       0.000  -1.396   0.000  1.00  0.00           C  
+ATOM      5  C5  BEN A   1       1.209  -0.698   0.000  1.00  0.00           C  
+ATOM      6  C6  BEN A   1       1.209   0.698   0.000  1.00  0.00           C  
+END
 `;
 
-const ThreeDMolViewer: React.FC = () => {
+const ThreeDMolViewer: React.FC<ThreeDMolViewerProps> = ({ moleculeData }) => {
   const viewerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Dynamically import 3Dmol (npm package) for client-side rendering
-    import("3dmol").then(($3Dmol) => {
-      if (viewerRef.current) {
-        viewerRef.current.innerHTML = ""; // Clear previous
+    // Only run on client
+    if (typeof window === "undefined") return;
+
+    // Dynamically load 3Dmol.js if it doesn't exist
+    if (!(window as any).$3Dmol) {
+      const script = document.createElement("script");
+      script.src = "/vendor/3Dmol-min.js";
+      script.async = true;
+      script.onload = () => renderMol();
+      document.body.appendChild(script);
+      return;
+    }
+    renderMol();
+
+    function renderMol() {
+      if (viewerRef.current && (window as any).$3Dmol) {
+        viewerRef.current.innerHTML = "";
+        const $3Dmol = (window as any).$3Dmol;
         const element = $3Dmol.createViewer(viewerRef.current, {
-          backgroundColor: "#fff",
+          backgroundColor: "white",
         });
-        element.addModel(MOL_DATA, "mol");
-        element.setStyle({}, { stick: { radius: 0.17, color: "#9333EA" } });
+        element.addModel(moleculeData || DEFAULT_PDB, "pdb");
+        element.setStyle({}, { stick: {}, sphere: { scale: 0.25 } });
         element.zoomTo();
-        element.animate({ loop: "backAndForth" });
         element.render();
       }
-    });
-  }, []);
+    }
+    // eslint-disable-next-line
+  }, [moleculeData]);
 
   return (
-    <div className="w-full flex justify-center items-center">
-      <div
-        ref={viewerRef}
-        style={{
-          width: "220px",
-          height: "220px",
-          borderRadius: "16px",
-          boxShadow: "0 2px 12px #e9e9f9",
-          background: "#fff",
-        }}
-      />
-    </div>
-  );
-};
-
-export default ThreeDMolViewer;
+    <div
+      ref={viewerRef}
