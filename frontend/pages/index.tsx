@@ -11,6 +11,7 @@ import FAQAccordion from "@/components/FAQAccordion";
 import CommunityCard from "@/components/CommunityCard";
 import MobileNav from "@/components/MobileNav";
 import AnimatedMolecules from "@/components/AnimatedMolecules";
+import ThreeDMolViewer from "@/components/ThreeDMolViewer";
 
 // --- Updated suggestions
 const suggestions = [
