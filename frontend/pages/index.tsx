@@ -79,6 +79,9 @@ export default function HomePage() {
 
 {/* Hero Section */}
 <section className="flex flex-col items-center justify-center pt-10 pb-8 px-2 sm:px-0">
+  <div className="mb-6 flex items-center justify-center w-full">
+    <ThreeDMolViewer moleculeData={BENZENE_PDB} />
+  </div>
   <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center mb-4 leading-tight">
     The <span className="text-violet-700">AI-Powered Platform</span> Reinventing <span className="text-cyan-500">Drug Design & Chemistry</span>
   </h1>
@@ -120,9 +123,7 @@ export default function HomePage() {
     <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
     <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
   </div>
-   <div className="mb-4 flex items-center justify-center w-full">
-    <ThreeDMolViewer moleculeData={BENZENE_PDB} />
-  </div>
+   
 </section>
 
       {/* Features */}
