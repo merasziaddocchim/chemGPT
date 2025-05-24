@@ -22,20 +22,21 @@ const suggestions = [
 ];
 
 const BENZENE_PDB = `
-HETATM    1  C1  BEN A   1      -0.667   1.151    0.000
-HETATM    2  C2  BEN A   1      -1.334   0.000    0.000
-HETATM    3  C3  BEN A   1      -0.667  -1.151    0.000
-HETATM    4  C4  BEN A   1       0.667  -1.151    0.000
-HETATM    5  C5  BEN A   1       1.334   0.000    0.000
-HETATM    6  C6  BEN A   1       0.667   1.151    0.000
-CONECT    1    2    6
-CONECT    2    1    3
-CONECT    3    2    4
-CONECT    4    3    5
-CONECT    5    4    6
-CONECT    6    5    1
+ATOM      1  C1  BEN A   1       0.000   1.396   0.000  1.00  0.00           C  
+ATOM      2  C2  BEN A   1      -1.209   0.698   0.000  1.00  0.00           C  
+ATOM      3  C3  BEN A   1      -1.209  -0.698   0.000  1.00  0.00           C  
+ATOM      4  C4  BEN A   1       0.000  -1.396   0.000  1.00  0.00           C  
+ATOM      5  C5  BEN A   1       1.209  -0.698   0.000  1.00  0.00           C  
+ATOM      6  C6  BEN A   1       1.209   0.698   0.000  1.00  0.00           C  
+ATOM      7  H1  BEN A   1       0.000   2.479   0.000  1.00  0.00           H  
+ATOM      8  H2  BEN A   1      -2.147   1.240   0.000  1.00  0.00           H  
+ATOM      9  H3  BEN A   1      -2.147  -1.240   0.000  1.00  0.00           H  
+ATOM     10  H4  BEN A   1       0.000  -2.479   0.000  1.00  0.00           H  
+ATOM     11  H5  BEN A   1       2.147  -1.240   0.000  1.00  0.00           H  
+ATOM     12  H6  BEN A   1       2.147   1.240   0.000  1.00  0.00           H  
 END
 `;
+
 
 
 export default function HomePage() {
@@ -119,7 +120,7 @@ export default function HomePage() {
     <span className="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full font-semibold text-xs">#AIforScience</span>
     <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
   </div>
-  <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
+   <div className="mb-4 flex items-center justify-center w-full">
     <ThreeDMolViewer moleculeData={BENZENE_PDB} />
   </div>
 </section>
