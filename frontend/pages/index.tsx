@@ -105,11 +105,7 @@ export default function HomePage() {
           <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-6 mb-6 flex flex-col items-center">
   <AnimatedMolecules />
   {/* Optional: keep export button, etc. */}
-  <div className="flex justify-end w-full">
-    <button className="text-xs text-gray-400 hover:underline flex items-center gap-1">
-      <span>Export as JPEG</span>
-    </button>
-  </div>
+  
 </div>
 
         </div>
