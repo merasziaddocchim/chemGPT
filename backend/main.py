@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from openai import OpenAI
-
+from spectroscopy import router as spectroscopy_router
 from database import engine
 import models
 from auth import router as auth_router
@@ -30,6 +30,8 @@ def get_openai_client():
     if not api_key:
         raise RuntimeError("OPENAI_API_KEY is not set")
     return OpenAI(api_key=api_key)
+
+app.include_router(spectroscopy_router)
 
 @app.get("/")
 def read_root():
