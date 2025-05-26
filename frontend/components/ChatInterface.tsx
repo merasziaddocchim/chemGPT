@@ -14,51 +14,72 @@ interface ChatInterfaceProps {
   initialQuery?: string;
 }
 
+// 🔍 Keywords to trigger spectroscopy routing
+const spectroscopyKeywords = [
+  "spectrum", "spectra", "spectroscopy", "uv", "uv-vis", "ir", "infrared"
+];
+
+function containsSpectroscopyKeyword(input: string) {
+  return spectroscopyKeywords.some((word) =>
+    input.toLowerCase().includes(word)
+  );
+}
+
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const hasSentInitialQuery = useRef(false);
 
-  // Auto-scroll on new message
+  // Scroll to bottom on new message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle initialQuery on mount/when it changes (only fire once)
+  // Send initial query on mount
   useEffect(() => {
     if (initialQuery && !hasSentInitialQuery.current) {
       hasSentInitialQuery.current = true;
       handleSend(undefined, initialQuery);
     }
-    // eslint-disable-next-line
   }, [initialQuery]);
 
+  // 🧠 Main send logic with routing
   async function handleSend(
     e?: FormEvent,
-    customInput?: string // For auto-sending initialQuery
+    customInput?: string
   ) {
     if (e) e.preventDefault();
-    const query = customInput !== undefined
-      ? customInput
-      : input.trim();
+    const query = customInput !== undefined ? customInput : input.trim();
     if (!query) return;
 
     setMessages((msgs) => [...msgs, { role: "user", content: query }]);
     setInput("");
 
     try {
-      const res = await fetch("https://chemgpt-production.up.railway.app/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: query }),
-      });
+      let res;
+      if (containsSpectroscopyKeyword(query)) {
+        console.log("🎯 Detected spectroscopy query");
+        res = await fetch("https://chemgpt-production.up.railway.app/spectroscopy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+      } else {
+        res = await fetch("https://chemgpt-production.up.railway.app/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: query }),
+        });
+      }
+
       const data = await res.json();
       setMessages((msgs) => [
         ...msgs,
         { role: "assistant", content: data.answer || "Sorry, I couldn't answer that." },
       ]);
-    } catch {
+    } catch (error) {
+      console.error("❌ Error in handleSend", error);
       setMessages((msgs) => [
         ...msgs,
         { role: "assistant", content: "Network error. Please try again." },
