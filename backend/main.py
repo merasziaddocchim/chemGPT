@@ -6,32 +6,36 @@ from spectroscopy import router as spectroscopy_router
 from database import engine
 import models
 from auth import router as auth_router
+from aizynth import predict_route  # Retrosynthesis
+from chemdata_wrapper import create_chem_extractor  # NEW ChemDataExtractor wrapper
 
-from aizynth import predict_route  # 👈 NEW import for retrosynthesis
-
+# Create app instance
 app = FastAPI()
 
-# Enable CORS (adjust for production!)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Use your frontend domain in prod
+    allow_origins=["*"],  # Replace with frontend domain in production
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 👇 NEW: Create all tables (users, etc.)
+# Initialize DB models
 models.Base.metadata.create_all(bind=engine)
 
-# 👇 NEW: Add all /register, /login, /verify-email endpoints!
+# Include routers
 app.include_router(auth_router)
+app.include_router(spectroscopy_router)
 
+# Init OpenAI
 def get_openai_client():
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError("OPENAI_API_KEY is not set")
     return OpenAI(api_key=api_key)
 
-app.include_router(spectroscopy_router)
+# Init ChemDataExtractor (DAWG-free wrapper)
+chem_extractor = create_chem_extractor()
 
 @app.get("/")
 def read_root():
@@ -70,9 +74,6 @@ async def chat(req: Request):
     answer = response.choices[0].message.content
     return {"answer": answer}
 
-# ===========================
-#  NEW: RETROSYNTHESIS ENDPOINT
-# ===========================
 @app.post("/retrosynthesis")
 async def retrosynthesis(req: Request):
     body = await req.json()
@@ -80,3 +81,13 @@ async def retrosynthesis(req: Request):
     if not smiles:
         return {"answer": "⚠️ No SMILES provided."}
     return predict_route(smiles)
+
+# ✅ NEW: Chemical Information Extraction Endpoint
+@app.post("/extract")
+async def extract_chemical_info(req: Request):
+    body = await req.json()
+    text = body.get("text", "")
+    if not text:
+        return {"error": "⚠️ No text provided."}
+    result = chem_extractor(text)
+    return {"result": result}
