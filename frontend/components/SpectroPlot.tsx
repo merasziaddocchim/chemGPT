@@ -2,7 +2,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-// ✅ Dynamically import without typing the import itself
+// ✅ Safe dynamic import (no typing of the import itself)
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 interface UVPeak {
@@ -37,41 +37,45 @@ const SpectroPlot: React.FC<SpectroPlotProps> = ({ uv = [], ir = [] }) => {
     <div className="my-4">
       {uv.length > 0 && (
         <Plot
-          data={[{
-            x: uvX,
-            y: uvY,
-            type: "scatter",
-            mode: "lines+markers",
-            marker: { color: "blue" },
-            name: "UV Absorbance"
-          }]}
-          layout={{
-            title: "📈 UV Spectrum",
-            xaxis: { title: "Wavelength (nm)" },
-            yaxis: { title: "Relative Intensity" },
-            height: 300,
-          }}
-          config={{ responsive: true }}
+          {...{
+            data: [{
+              x: uvX,
+              y: uvY,
+              type: "scatter",
+              mode: "lines+markers",
+              marker: { color: "blue" },
+              name: "UV Absorbance"
+            }],
+            layout: {
+              title: "📈 UV Spectrum",
+              xaxis: { title: "Wavelength (nm)" },
+              yaxis: { title: "Relative Intensity" },
+              height: 300
+            },
+            config: { responsive: true }
+          } as any}
         />
       )}
 
       {ir.length > 0 && (
         <Plot
-          data={[{
-            x: irX,
-            y: irY,
-            type: "scatter",
-            mode: "lines+markers",
-            marker: { color: "red" },
-            name: "IR Peaks"
-          }]}
-          layout={{
-            title: "🔬 IR Spectrum",
-            xaxis: { title: "Wavenumber (cm⁻¹)", autorange: "reversed" },
-            yaxis: { title: "Relative Absorbance" },
-            height: 300,
-          }}
-          config={{ responsive: true }}
+          {...{
+            data: [{
+              x: irX,
+              y: irY,
+              type: "scatter",
+              mode: "lines+markers",
+              marker: { color: "red" },
+              name: "IR Absorbance"
+            }],
+            layout: {
+              title: "🔬 IR Spectrum",
+              xaxis: { title: "Wavenumber (cm⁻¹)", autorange: "reversed" },
+              yaxis: { title: "Relative Absorbance" },
+              height: 300
+            },
+            config: { responsive: true }
+          } as any}
         />
       )}
     </div>
