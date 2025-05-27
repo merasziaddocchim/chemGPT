@@ -6,9 +6,6 @@ rdkit-pypi
 aizynthfinder
 requests
 chemdataextractor[chemistry,models,parser,database]
-# ⚠️ DO NOT ADD: dawg-python (it breaks wheels on cloud builds)
-
-# 🔐 Auth system
 sqlalchemy
 pydantic
 passlib[bcrypt]
