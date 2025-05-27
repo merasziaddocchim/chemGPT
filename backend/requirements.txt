@@ -5,8 +5,12 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
+
+# 🔬 Chemistry core
 chemdataextractor[chemistry,models,parser,database,web]
-marisa-trie
+dawg-python
+
+# 🔐 Auth system
 sqlalchemy
 pydantic
 passlib[bcrypt]
