@@ -1,12 +1,9 @@
 "use client";
 import React from "react";
 import dynamic from "next/dynamic";
-import { PlotParams } from "react-plotly.js";
 
-const Plot = dynamic<PlotParams>(
-  () => import("react-plotly.js"),
-  { ssr: false }
-);
+// ✅ Dynamically import without typing the import itself
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 interface UVPeak {
   wavelength: number;
@@ -40,16 +37,14 @@ const SpectroPlot: React.FC<SpectroPlotProps> = ({ uv = [], ir = [] }) => {
     <div className="my-4">
       {uv.length > 0 && (
         <Plot
-          data={[
-            {
-              x: uvX,
-              y: uvY,
-              type: "scatter",
-              mode: "lines+markers",
-              marker: { color: "blue" },
-              name: "UV Absorbance",
-            },
-          ]}
+          data={[{
+            x: uvX,
+            y: uvY,
+            type: "scatter",
+            mode: "lines+markers",
+            marker: { color: "blue" },
+            name: "UV Absorbance"
+          }]}
           layout={{
             title: "📈 UV Spectrum",
             xaxis: { title: "Wavelength (nm)" },
@@ -62,16 +57,14 @@ const SpectroPlot: React.FC<SpectroPlotProps> = ({ uv = [], ir = [] }) => {
 
       {ir.length > 0 && (
         <Plot
-          data={[
-            {
-              x: irX,
-              y: irY,
-              type: "scatter",
-              mode: "lines+markers",
-              marker: { color: "red" },
-              name: "IR Peaks",
-            },
-          ]}
+          data={[{
+            x: irX,
+            y: irY,
+            type: "scatter",
+            mode: "lines+markers",
+            marker: { color: "red" },
+            name: "IR Peaks"
+          }]}
           layout={{
             title: "🔬 IR Spectrum",
             xaxis: { title: "Wavenumber (cm⁻¹)", autorange: "reversed" },
