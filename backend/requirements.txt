@@ -5,6 +5,7 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
+chemdataextractor
 
 # Auth system dependencies
 sqlalchemy
