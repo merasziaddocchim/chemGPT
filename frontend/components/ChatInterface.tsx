@@ -24,6 +24,23 @@ function containsSpectroscopyKeyword(input: string) {
     input.toLowerCase().includes(word)
   );
 }
+function formatSpectroscopyMessage(data: any): string {
+  const uv = data.uv?.peaks ?? [];
+  const ir = data.ir?.peaks ?? [];
+  const explanation = data.explanation ?? "";
+
+  let uvTable = "### 📈 UV Spectrum\n\n| λ (nm) | Intensity | Type |\n|--------|-----------|------|\n";
+  uv.forEach((peak: any) => {
+    uvTable += `| ${peak.wavelength} | ${peak.intensity} | ${peak.type} |\n`;
+  });
+
+  let irTable = "### 🔬 IR Spectrum\n\n| Wavenumber (cm⁻¹) | Intensity | Assignment |\n|-------------------|-----------|------------|\n";
+  ir.forEach((peak: any) => {
+    irTable += `| ${peak.wavenumber} | ${peak.intensity} | ${peak.assignment} |\n`;
+  });
+
+  return `${uvTable}\n\n${irTable}\n\n### 🧠 Explanation\n\n${explanation}`;
+}
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -73,11 +90,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
         });
       }
 
-      const data = await res.json();
-      setMessages((msgs) => [
-        ...msgs,
-        { role: "assistant", content: data.answer || "Sorry, I couldn't answer that." },
-      ]);
+const data = await res.json();
+
+// Check if it's spectroscopy structured response
+if (data.uv && data.ir) {
+  const formatted = formatSpectroscopyMessage(data);
+  setMessages((msgs) => [...msgs, { role: "assistant", content: formatted }]);
+} else {
+  setMessages((msgs) => [
+    ...msgs,
+    { role: "assistant", content: data.answer || "Sorry, I couldn't answer that." },
+  ]);
+}
+
     } catch (error) {
       console.error("❌ Error in handleSend", error);
       setMessages((msgs) => [
