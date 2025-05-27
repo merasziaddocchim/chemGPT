@@ -5,7 +5,7 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
-chemdataextractor[chemistry,models,parser,database]
+chemdataextractor[chemistry,models,parser,database]  # no dawg!
 sqlalchemy
 pydantic
 passlib[bcrypt]
