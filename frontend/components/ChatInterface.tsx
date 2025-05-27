@@ -4,10 +4,13 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+import dynamic from "next/dynamic";
+const SpectroPlot = dynamic(() => import("@/components/SpectroPlot"), { ssr: false });
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  spectroData?: any; // optional field for spectroscopy plot data
 }
 
 interface ChatInterfaceProps {
@@ -95,13 +98,16 @@ const data = await res.json();
 // Check if it's spectroscopy structured response
 if (data.uv && data.ir) {
   const formatted = formatSpectroscopyMessage(data);
-  setMessages((msgs) => [...msgs, { role: "assistant", content: formatted }]);
-} else {
   setMessages((msgs) => [
     ...msgs,
-    { role: "assistant", content: data.answer || "Sorry, I couldn't answer that." },
+    {
+      role: "assistant",
+      content: formatted,
+      spectroData: { uv: data.uv.peaks, ir: data.ir.peaks }
+    }
   ]);
 }
+
 
     } catch (error) {
       console.error("❌ Error in handleSend", error);
@@ -158,6 +164,10 @@ if (data.uv && data.ir) {
               >
                 {msg.content}
               </ReactMarkdown>
+              {msg.role === "assistant" && msg.spectroData && (
+  <SpectroPlot uv={msg.spectroData.uv} ir={msg.spectroData.ir} />
+)}
+
             </div>
           </div>
         ))}
