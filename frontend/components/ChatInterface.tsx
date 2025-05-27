@@ -125,7 +125,7 @@ if (data.uv && data.ir) {
   return (
     <div className="flex flex-col w-full max-w-2xl mx-auto min-h-[72vh] sm:min-h-[80vh] bg-white/90 rounded-2xl shadow-xl px-2 py-8 mt-4 mb-8 relative overflow-hidden">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto max-h-[60vh] px-1 pb-32">
+      <div className="flex-1 overflow-y-auto max-h-[80vh] px-1 pb-32">
         {messages.length === 0 && (
           <div className="text-center text-gray-400 mt-12">
             <span>Ask your chemistry question to ChemGPT…</span>
