@@ -5,10 +5,8 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
-
-# 🔬 Chemistry core
-chemdataextractor[chemistry,models,parser,database,web]
-dawg-python
+chemdataextractor[chemistry,models,parser,database]
+# ⚠️ DO NOT ADD: dawg-python (it breaks wheels on cloud builds)
 
 # 🔐 Auth system
 sqlalchemy
