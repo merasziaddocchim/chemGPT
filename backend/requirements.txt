@@ -5,9 +5,8 @@ langchain
 rdkit-pypi
 aizynthfinder
 requests
-chemdataextractor
-
-# Auth system dependencies
+chemdataextractor[chemistry,models,parser,database,web]
+marisa-trie
 sqlalchemy
 pydantic
 passlib[bcrypt]
