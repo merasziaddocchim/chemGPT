@@ -1,23 +1,33 @@
-FROM python:3.10  # not slim, ensures C extensions build cleanly
+FROM python:3.10-bullseye
 
 # System dependencies
-RUN apt-get update && \
-    apt-get install -y build-essential python3-dev gcc g++ \
-                       libxml2-dev libxslt1-dev libffi-dev && \
-    apt-get clean
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    libxml2-dev \
+    libxslt1-dev \
+    libffi-dev \
+    zlib1g-dev \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set workdir
 WORKDIR /app
 
-# Copy only requirements first to cache better
+# Copy requirements first for caching
 COPY requirements.txt .
 
-# Install dependencies
+# Install Python deps
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy full app
+# Copy rest of the app
 COPY . .
 
-# Start the server
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Default port
+EXPOSE 8000
+
+# Start app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
