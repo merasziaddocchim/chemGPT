@@ -14,7 +14,7 @@ numpy==1.24.3
 scipy==1.11.4
 
 # Chemistry
-rdkit==2023.3.1
+rdkit==2023.2.1
 aizynthfinder==4.3.0
 tensorflow==2.15.0
 
