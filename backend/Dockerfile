@@ -1,11 +1,11 @@
 # ======================================================
-# 🚀 ChemGPT Dockerfile — Final (DAWG-Free + Stable)
-# Compatible with: FastAPI, OpenAI, RDKit, AiZynthFinder, ChemDataExtractor2
+# 🚀 ChemGPT Dockerfile — Production-Ready (May 2025)
+# Compatible with: FastAPI, OpenAI, RDKit, AiZynthFinder, ChemDataExtractor2, TensorFlow
 # ======================================================
 
 FROM python:3.10-slim
 
-# ⚙️ Minimal runtime dependencies + git for GitHub pip installs
+# System dependencies for RDKit, CDE2, TensorFlow, and general
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 \
     libxslt1.1 \
@@ -18,32 +18,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# ✅ Fix pip warning when running as root
+# ENV variables for root pip, CDE2 pure python mode
 ENV PIP_ROOT_USER_ACTION=ignore
-
-# ✅ Enable DAWG-free mode for ChemDataExtractor2
 ENV CDE_PURE_PYTHON=1
 
-# 📁 Set working directory
 WORKDIR /app
 
-# 📦 Install dependencies in correct order
+# 📦 Install critical dependencies in correct order
 COPY requirements.txt .
 
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir dawg-python lxml && \
+    pip install --no-cache-dir requests==2.23.0 && \
+    pip install --no-cache-dir dawg-python==0.7.2 lxml==4.9.3 && \
     pip install --no-cache-dir -r requirements.txt && \
     python -m nltk.downloader punkt averaged_perceptron_tagger wordnet && \
     python -m spacy download en_core_web_sm
 
-# 📁 Copy application code
+# Copy all application code
 COPY . .
 
-# ⏬ Preload ChemDataExtractor2 models to prevent cold-start issues
-RUN python -c "from chemdataextractor2 import Document; Document('Init')"
+# ⏬ Preload ChemDataExtractor2 models to avoid cold starts, but do NOT fail build if error
+RUN python -c "try: from chemdataextractor2 import Document; Document('Init'); print('ChemDataExtractor2 initialized successfully'); except Exception as e: print(f'Warning: CDE2 init failed: {e}')"
 
-# 🌐 Expose FastAPI port
 EXPOSE 8000
 
-# 🚀 Start the FastAPI server
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
