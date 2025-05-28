@@ -3,9 +3,10 @@
     "cache": {
       "paths": [
         "/root/.cache/pip",
-        "/root/.cache/chemdataextractor2"
+        "/root/.cache/chemdataextractor2",
+        "/root/.cache/spacy"
       ]
     },
-    "timeout": 600
+    "timeout": 1200
   }
 }
