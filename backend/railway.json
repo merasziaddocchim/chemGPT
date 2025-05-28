@@ -1,0 +1,10 @@
+{
+  "build": {
+    "cache": {
+      "paths": [
+        "/root/.cache/pip",
+        "/root/.cache/chemdataextractor2"
+      ]
+    }
+  }
+}
