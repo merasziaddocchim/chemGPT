@@ -4,7 +4,7 @@
 rdkit-pypi>=2023.3.3
 aizynthfinder==4.3.0
 chemdataextractor2>=2.0.0
-pure-dawg>=0.1.0
+pure_dawg>=0.1.0
 lxml>=4.9.3
 beautifulsoup4==4.12.2
 requests==2.31.0
