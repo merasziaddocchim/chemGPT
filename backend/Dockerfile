@@ -18,17 +18,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# ✅ ADD THIS LINE BELOW 👇
+ENV CDE_PURE_PYTHON=1
+
+# Set working directory
+WORKDIR /app
+
 # 📂 Set working directory
 WORKDIR /app
 
 # 🧪 Install dependencies in correct order to avoid wheel conflicts
 COPY requirements.txt .
 
+# ✅ Working Python DAWG alternative + CDE deps
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir pure-dawg lxml && \
+    pip install --no-cache-dir dawg-python lxml && \
     pip install --no-cache-dir -r requirements.txt && \
     python -m nltk.downloader punkt averaged_perceptron_tagger wordnet && \
     python -m spacy download en_core_web_sm
+
 
 # 📦 Copy rest of your backend code
 COPY . .
