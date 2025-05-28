@@ -1,13 +1,13 @@
 # ================================
 # 🔬 Chemistry and Spectroscopy Stack
 # ================================
+requests==2.23.0
+dawg-python==0.7.2
+lxml==4.9.3
 rdkit-pypi==2022.9.5
+beautifulsoup4==4.12.2
 aizynthfinder==4.3.0
 git+https://github.com/CambridgeMolecularEngineering/chemdataextractor2.git@v2.0.1
-dawg-python>=0.7.2
-lxml>=4.9.3
-beautifulsoup4==4.12.2
-requests>=2.21.0,<2.24.0
 spacy==3.7.2
 textdistance==4.6.0
 fuzzywuzzy==0.18.0
@@ -15,7 +15,7 @@ python-levenshtein==0.23.0
 nltk==3.8.1
 numpy==1.24.3
 scipy==1.11.4
-tensorflow==2.15.0
+tensorflow==2.15.0  # Future ML features
 
 # ================================
 # 🤖 AI / LLM Stack
