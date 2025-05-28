@@ -1,5 +1,5 @@
 # ================================
-# 🔬 Chemistry + Spectroscopy Stack
+# 🔬 Chemistry and Spectroscopy Stack
 # ================================
 rdkit-pypi>=2023.3.3
 aizynthfinder==4.3.0
