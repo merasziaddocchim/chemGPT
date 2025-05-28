@@ -1,6 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import logging
+import traceback
 import os
+
 from openai import OpenAI
 from spectroscopy import router as spectroscopy_router
 from database import engine
@@ -9,34 +13,53 @@ from auth import router as auth_router
 from aizynth import predict_route  # Retrosynthesis
 from chemdata_wrapper import create_chem_extractor  # NEW ChemDataExtractor wrapper
 
-# Create app instance
+# ---------- Robust Logging & Error Handling ----------
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI()
 
-# Enable CORS
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception: {str(exc)}")
+    logger.error(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": str(exc)}
+    )
+
+# ---------- Enable CORS (Open during development) ----------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with frontend domain in production
+    allow_origins=["*"],  # Replace with frontend domain in production!
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Initialize DB models
+# ---------- Initialize DB models ----------
 models.Base.metadata.create_all(bind=engine)
 
-# Include routers
+# ---------- Include Routers ----------
 app.include_router(auth_router)
 app.include_router(spectroscopy_router)
 
-# Init OpenAI
+# ---------- OpenAI Client Factory ----------
 def get_openai_client():
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError("OPENAI_API_KEY is not set")
     return OpenAI(api_key=api_key)
 
-# Init ChemDataExtractor (DAWG-free wrapper)
-chem_extractor = create_chem_extractor()
+# ---------- ChemDataExtractor (DAWG-free) with Safe Init ----------
+try:
+    chem_extractor = create_chem_extractor()
+    logger.info("ChemDataExtractor initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing ChemDataExtractor: {e}")
+    def chem_extractor(text):
+        return {"error": "ChemDataExtractor unavailable"}
 
+# ---------- API Endpoints ----------
 @app.get("/")
 def read_root():
     return {"message": "ChemGPT Backend is alive!"}
@@ -62,7 +85,6 @@ async def chat(req: Request):
     )
 
     client = get_openai_client()
-
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -70,7 +92,6 @@ async def chat(req: Request):
             {"role": "user", "content": question}
         ]
     )
-
     answer = response.choices[0].message.content
     return {"answer": answer}
 
@@ -82,7 +103,6 @@ async def retrosynthesis(req: Request):
         return {"answer": "⚠️ No SMILES provided."}
     return predict_route(smiles)
 
-# ✅ NEW: Chemical Information Extraction Endpoint
 @app.post("/extract")
 async def extract_chemical_info(req: Request):
     body = await req.json()
