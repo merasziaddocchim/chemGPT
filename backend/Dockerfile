@@ -1,33 +1,43 @@
-FROM python:3.10-bullseye
+# ======================================================
+# 🚀 ChemGPT Dockerfile — Final Version (Pure-DAWG + CDE2)
+# Compatible with: FastAPI, OpenAI, RDKit, AiZynthFinder, ChemDataExtractor2
+# Target: Railway or cloud deployment (no DAWG issues)
+# ======================================================
 
-# System dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    libxml2-dev \
-    libxslt1-dev \
-    libffi-dev \
-    zlib1g-dev \
-    git \
+FROM python:3.10-slim
+
+# ⚙️ Minimal runtime dependencies only — no compilers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxml2 \
+    libxslt1.1 \
+    libjpeg62-turbo \
+    libpng16-16 \
+    libfreetype6 \
+    libboost-system1.74.0 \
+    libboost-python1.74.0 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir
+# 📂 Set working directory
 WORKDIR /app
 
-# Copy requirements first for caching
+# 🧪 Install dependencies in correct order to avoid wheel conflicts
 COPY requirements.txt .
 
-# Install Python deps
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir pure-dawg lxml && \
+    pip install --no-cache-dir -r requirements.txt && \
+    python -m nltk.downloader punkt averaged_perceptron_tagger wordnet && \
+    python -m spacy download en_core_web_sm
 
-# Copy rest of the app
+# 📦 Copy rest of your backend code
 COPY . .
 
-# Default port
+# ⏬ Preload ChemDataExtractor2 models to avoid cold start delays
+RUN python -c "from chemdataextractor2 import Document; Document('Init')"
+
+# 🌐 Expose default FastAPI port
 EXPOSE 8000
 
-# Start app
+# 🚀 Launch server
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
