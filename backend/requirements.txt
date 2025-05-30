@@ -1,7 +1,7 @@
 # ================================
 # 🌐 Core HTTP & Requests
 # ================================
-requests==2.23.0        # Basic HTTP client, only keep if needed for web requests
+requests==2.26.0        # Basic HTTP client, only keep if needed for web requests
 
 # ================================
 # 🤖 AI / LLM Stack (Optional)
