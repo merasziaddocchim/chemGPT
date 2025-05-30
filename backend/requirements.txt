@@ -1,51 +1,43 @@
 # ================================
-# 🔬 Chemistry and Spectroscopy Stack
+# 🌐 Core HTTP & Requests
 # ================================
-requests==2.23.0
-dawg-python==0.7.2
-lxml==4.9.3
-rdkit-pypi==2022.9.5
-beautifulsoup4==4.12.2
-aizynthfinder==4.3.0
-git+https://github.com/CambridgeMolecularEngineering/chemdataextractor2.git@v2.0.1
-spacy==3.7.2
-textdistance==4.6.0
-fuzzywuzzy==0.18.0
-python-levenshtein==0.23.0
-nltk==3.8.1
-numpy==1.24.3
-scipy==1.11.4
-tensorflow==2.15.0  # Future ML features
+requests==2.23.0        # Basic HTTP client, only keep if needed for web requests
 
 # ================================
-# 🤖 AI / LLM Stack
+# 🤖 AI / LLM Stack (Optional)
 # ================================
-openai==1.3.0
-langchain==0.1.0
-tiktoken==0.5.2
+openai==1.3.0           # For connecting to OpenAI's GPT models
+langchain==0.1.0        # For orchestration of LLM chains/agents (if used)
+tiktoken==0.5.2         # For efficient tokenization (OpenAI compatible)
 
 # ================================
-# 🔐 Auth & API
+# 🔐 API & Auth Stack
 # ================================
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-sqlalchemy==2.0.23
-pydantic==2.5.0
-email-validator==2.1.0
-python-dotenv==1.0.0
+fastapi==0.104.1                # Main API framework
+uvicorn[standard]==0.24.0       # ASGI server for FastAPI (with extras)
+python-multipart==0.0.6         # For handling file uploads/form data
+python-jose[cryptography]==3.3.0 # JWT authentication
+passlib[bcrypt]==1.7.4          # Password hashing for auth
+sqlalchemy==2.0.23              # Database ORM (if you have user/db logic)
+pydantic==2.5.0                 # Data validation and parsing (FastAPI models)
+email-validator==2.1.0          # Email address validation (for user signup)
+python-dotenv==1.0.0            # For loading env vars from .env file
 
 # ================================
-# ⚙️ Utils
+# ⚙️ Utility & Async Tools
 # ================================
-httpx==0.25.2
-aiofiles==23.2.0
-jinja2==3.1.2
+httpx==0.25.2           # Modern HTTP client, async support (great for microservice calls)
+aiofiles==23.2.0        # Async file handling
+jinja2==3.1.2           # Templating (emails, docs, etc.)
 
 # ================================
-# 🧪 Dev Tools
+# 🧪 Dev & Testing Tools
 # ================================
-pytest==7.4.3
-pytest-asyncio==0.21.1
+pytest==7.4.3           # Unit testing framework
+pytest-asyncio==0.21.1  # Async test support for pytest
+
+# ================================
+# 🚫 Chemistry/ML dependencies removed!
+# - If needed, install in individual microservice repos ONLY
+# - No chemdataextractor2, rdkit, aizynthfinder, spacy, dawg-python, tensorflow, etc.
+# ================================
