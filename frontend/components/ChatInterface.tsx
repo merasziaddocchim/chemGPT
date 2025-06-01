@@ -10,23 +10,15 @@ const SpectroPlot = dynamic(() => import("@/components/SpectroPlot"), { ssr: fal
 interface Message {
   role: "user" | "assistant";
   content: string;
-  spectroData?: any; // optional field for spectroscopy plot data
+  spectroData?: any;
 }
 
 interface ChatInterfaceProps {
   initialQuery?: string;
 }
 
-// 🔍 Keywords to trigger spectroscopy routing
-const spectroscopyKeywords = [
-  "spectrum", "spectra", "spectroscopy", "uv", "uv-vis", "ir", "infrared"
-];
+const GATEWAY_CHAT_URL = "https://chemgpt-gateway-production.up.railway.app/chat";
 
-function containsSpectroscopyKeyword(input: string) {
-  return spectroscopyKeywords.some((word) =>
-    input.toLowerCase().includes(word)
-  );
-}
 function formatSpectroscopyMessage(data: any): string {
   const uv = data.uv?.peaks ?? [];
   const ir = data.ir?.peaks ?? [];
@@ -34,12 +26,12 @@ function formatSpectroscopyMessage(data: any): string {
 
   let uvTable = "### 📈 UV Spectrum\n\n| λ (nm) | Intensity | Type |\n|--------|-----------|------|\n";
   uv.forEach((peak: any) => {
-    uvTable += `| ${peak.wavelength} | ${peak.intensity} | ${peak.type} |\n`;
+    uvTable += `| ${peak.wavelength} | ${peak.intensity} | ${peak.type || ""} |\n`;
   });
 
   let irTable = "### 🔬 IR Spectrum\n\n| Wavenumber (cm⁻¹) | Intensity | Assignment |\n|-------------------|-----------|------------|\n";
   ir.forEach((peak: any) => {
-    irTable += `| ${peak.wavenumber} | ${peak.intensity} | ${peak.assignment} |\n`;
+    irTable += `| ${peak.wavenumber} | ${peak.intensity} | ${peak.assignment || ""} |\n`;
   });
 
   return `${uvTable}\n\n${irTable}\n\n### 🧠 Explanation\n\n${explanation}`;
@@ -47,16 +39,14 @@ function formatSpectroscopyMessage(data: any): string {
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState<string>(initialQuery);
   const bottomRef = useRef<HTMLDivElement>(null);
   const hasSentInitialQuery = useRef(false);
 
-  // Scroll to bottom on new message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Send initial query on mount
   useEffect(() => {
     if (initialQuery && !hasSentInitialQuery.current) {
       hasSentInitialQuery.current = true;
@@ -64,11 +54,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
     }
   }, [initialQuery]);
 
-  // 🧠 Main send logic with routing
-  async function handleSend(
-    e?: FormEvent,
-    customInput?: string
-  ) {
+  // 🧠 All-in-one chat — calls only /chat API
+  async function handleSend(e?: FormEvent, customInput?: string) {
     if (e) e.preventDefault();
     const query = customInput !== undefined ? customInput : input.trim();
     if (!query) return;
@@ -77,40 +64,46 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialQuery = "" }) => {
     setInput("");
 
     try {
-      let res;
-      if (containsSpectroscopyKeyword(query)) {
-        console.log("🎯 Detected spectroscopy query");
-        res = await fetch("https://chemgpt-production.up.railway.app/spectroscopy", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }),
-        });
+      const res = await fetch(GATEWAY_CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: query }),
+      });
+
+      const data = await res.json();
+
+      let answerContent = "";
+      let spectroData = undefined;
+
+      if (data.type === "extract") {
+        answerContent =
+          `**Extracted compounds:**\n\n` +
+          (data.answer.entities?.compounds?.length
+            ? data.answer.entities.compounds.join(", ")
+            : "_No compounds found._");
+      } else if (data.type === "spectro") {
+        answerContent = formatSpectroscopyMessage(data.answer);
+        spectroData = {
+          uv: data.answer.uv?.peaks ?? [],
+          ir: data.answer.ir?.peaks ?? [],
+        };
+      } else if (data.type === "retro") {
+        answerContent = `**Retrosynthesis Result:**\n\n\`\`\`json\n${JSON.stringify(data.answer, null, 2)}\n\`\`\``;
       } else {
-        res = await fetch("https://chemgpt-production.up.railway.app/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question: query }),
-        });
+        answerContent = typeof data.answer === "string"
+          ? data.answer
+          : JSON.stringify(data.answer, null, 2);
       }
 
-const data = await res.json();
-
-// Check if it's spectroscopy structured response
-if (data.uv && data.ir) {
-  const formatted = formatSpectroscopyMessage(data);
-  setMessages((msgs) => [
-    ...msgs,
-    {
-      role: "assistant",
-      content: formatted,
-      spectroData: { uv: data.uv.peaks, ir: data.ir.peaks }
-    }
-  ]);
-}
-
-
+      setMessages((msgs) => [
+        ...msgs,
+        {
+          role: "assistant",
+          content: answerContent,
+          spectroData,
+        }
+      ]);
     } catch (error) {
-      console.error("❌ Error in handleSend", error);
       setMessages((msgs) => [
         ...msgs,
         { role: "assistant", content: "Network error. Please try again." },
@@ -165,9 +158,8 @@ if (data.uv && data.ir) {
                 {msg.content}
               </ReactMarkdown>
               {msg.role === "assistant" && msg.spectroData && (
-  <SpectroPlot uv={msg.spectroData.uv} ir={msg.spectroData.ir} />
-)}
-
+                <SpectroPlot uv={msg.spectroData.uv} ir={msg.spectroData.ir} />
+              )}
             </div>
           </div>
         ))}
