@@ -1,21 +1,19 @@
 # ================================
-# 🚀 ChemGPT API Gateway (Clean)
+# 🚀 ChemGPT API Gateway (Async & Robust)
 # ================================
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import logging
 import traceback
 import os
 
-from openai import OpenAI
+from openai import AsyncOpenAI, OpenAIError
 from spectroscopy import router as spectroscopy_router
 from database import engine
 import models
 from auth import router as auth_router
-# ❌ REMOVED: from aizynth import predict_route
-# ❌ REMOVED: from chemdata_wrapper import create_chem_extractor
 
 # -------------------------------
 # Logging & Error Handling
@@ -56,13 +54,45 @@ app.include_router(auth_router)
 app.include_router(spectroscopy_router)
 
 # -------------------------------
-# OpenAI Client Factory
+# OpenAI System Prompt (GLOBAL)
+# -------------------------------
+system_prompt = (
+    "You are ChemGPT, the world’s most advanced chemistry expert and educator—like a Nobel laureate, textbook author, and world-class university professor combined. "
+    "Your mission: to make any chemistry concept, question, or problem completely clear and accessible to every user, from beginner to PhD.\n\n"
+    "Always follow these principles:\n"
+    "- **Diagnose the user’s intent and skill level from their question; adapt your explanation’s depth and vocabulary accordingly.**\n"
+    "- **Structure every answer with clear section headers, bullet points, numbered lists, and clean formatting for instant readability.**\n"
+    "- **Always use LaTeX ($...$) for chemical equations, reactions, and math, and Markdown for formatting.**\n"
+    "- If the question is about:\n"
+    "  • **Organic Chemistry**: Provide step-by-step mechanisms, electron flow, stereochemistry, key intermediates, and relevant synthetic strategies.\n"
+    "  • **Inorganic Chemistry**: Explain structures, coordination chemistry, periodic trends, and typical reactions of elements and compounds.\n"
+    "  • **Physical Chemistry**: Clarify principles (thermodynamics, kinetics, quantum, statistical), show equations, and explain experimental/theoretical context.\n"
+    "  • **Analytical Chemistry**: Describe analytical methods (chromatography, spectroscopy, electrochemistry), how to interpret data, assign peaks, and troubleshoot experiments.\n"
+    "  • **Spectroscopy** (NMR, IR, UV-Vis, MS): Assign peaks/signals, provide chemical shift/range tables, and explain how spectra reveal molecular structure.\n"
+    "  • **Retrosynthesis & Synthesis**: Break down the target molecule, show all key disconnections, justify each, suggest alternative and green routes, and annotate strategic bonds.\n"
+    "  • **Materials Chemistry**: Describe structure–property relationships, characterization methods, and applications (polymers, nanomaterials, etc.).\n"
+    "  • **Pharmaceutical/Medicinal Chemistry**: Discuss drug design, SAR, ADME, common pharmacophores, and mechanisms of drug action.\n"
+    "  • **Computational/AI Chemistry**: Explain relevant algorithms (DFT, ML, LLMs for chemistry), input/output formats (SMILES, InChI), and best practices for simulation or prediction.\n"
+    "- **For every topic:**\n"
+    "  • Anticipate and address common misconceptions and pitfalls.\n"
+    "  • Give real-world applications or context when possible.\n"
+    "  • Include diagrams, emoji, or visual cues (e.g., 🧪, 🔬, 💡, ⚡) to boost engagement and highlight key info.\n"
+    "  • Offer further reading, practice problems, or related concepts if helpful.\n"
+    "- **Your style:** Be patient, friendly, and supportive. Always encourage curiosity. Never make the user feel ‘stupid’—you are their expert guide and mentor.\n"
+    "- **Never assume background knowledge without checking. Always invite follow-up questions.**\n"
+    "- After every answer, suggest 2–3 highly relevant follow-up or related questions a curious student might ask next. "
+    "These should build upon the current topic, clarify common doubts, or explore the concept in more depth. "
+    "Present them in a section titled 'You might also ask:'."
+)
+
+# -------------------------------
+# OpenAI Client Factory (Async)
 # -------------------------------
 def get_openai_client():
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError("OPENAI_API_KEY is not set")
-    return OpenAI(api_key=api_key)
+    return AsyncOpenAI(api_key=api_key)
 
 # ================================
 # API Endpoints
@@ -75,54 +105,36 @@ def read_root():
 
 @app.post("/chat")
 async def chat(req: Request):
-    """Chat endpoint: Sends chemistry questions to OpenAI LLM."""
-    body = await req.json()
-    question = body.get("question", "")
+    """
+    Chat endpoint: Sends chemistry questions to OpenAI LLM.
+    Validates input, uses async OpenAI client, handles errors gracefully.
+    """
+    try:
+        body = await req.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload.")
 
+    question = body.get("question", "").strip()
     if not question:
-        return {"answer": "⚠️ No question provided."}
-
-    system_prompt = (
-        "You are ChemGPT, an expert chemistry tutor. "
-        "Always explain chemistry questions clearly and in steps. "
-        "Use bullet points, numbered lists, or headers when needed. "
-        "Avoid dense text blocks. Keep formatting clean and easy to read. "
-        "If the user asks about a chemical reaction, always include:\n"
-        "- Step-by-step mechanism\n"
-        "- Key intermediates and transition states\n"
-        "- Any important notes for students\n\n"
-        "Respond like a human tutor who really wants the student to understand."
-    )
+        raise HTTPException(status_code=400, detail="No question provided.")
 
     client = get_openai_client()
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question}
-        ]
-    )
-    answer = response.choices[0].message.content
-    return {"answer": answer}
-
-# ❌ REMOVED: /retrosynthesis and /extract endpoints (now handled by microservices)
-# - In the future, to support these, this API gateway should call microservices via HTTP (httpx), NOT via local import.
-
-# Example: To call your microservices in the future, use:
-"""
-import httpx
-
-@app.post("/retrosynthesis")
-async def retrosynthesis(req: Request):
-    body = await req.json()
-    smiles = body.get("smiles", "")
-    if not smiles:
-        return {"answer": "⚠️ No SMILES provided."}
-    # Forward request to the retrosynthesis microservice
-    async with httpx.AsyncClient() as client:
-        r = await client.post("https://chemgpt-retro-url/retrosynthesis", json={"smiles": smiles})
-        return r.json()
-"""
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question}
+            ]
+        )
+        answer = response.choices[0].message.content
+        return {"answer": answer}
+    except OpenAIError as oe:
+        logger.error(f"OpenAI API error: {oe}")
+        raise HTTPException(status_code=502, detail="OpenAI API error.")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error.")
 
 # ================================
 # END main.py
