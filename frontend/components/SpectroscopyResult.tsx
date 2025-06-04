@@ -48,13 +48,14 @@ function parseTable(
 
   const data = rows.map(cells => {
     const x = parseFloat(cells[xIdx]);
-    let y = cells[yIdx];
-    if (yTransform) y = yTransform(y);
-    else y = parseFloat(y);
-    return !isNaN(x) && !isNaN(Number(y)) ? { x, y: Number(y) } : null;
+    let y: number;
+    if (yTransform) y = yTransform(cells[yIdx]);
+    else y = parseFloat(cells[yIdx]);
+    return !isNaN(x) && !isNaN(y) ? { x, y } : null;
   }).filter(Boolean);
   return data;
 }
+
 
 // Intensity transform for IR/UV tables (simple logic)
 function intensityToY(val: string): number {
