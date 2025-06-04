@@ -10,7 +10,6 @@ import traceback
 import os
 
 from openai import AsyncOpenAI, OpenAIError
-from spectroscopy import router as spectroscopy_router
 from database import engine
 import models
 from auth import router as auth_router
@@ -60,7 +59,6 @@ models.Base.metadata.create_all(bind=engine)
 # API Routers (User/Auth/Etc.)
 # -------------------------------
 app.include_router(auth_router)
-app.include_router(spectroscopy_router)
 
 # -------------------------------
 # OpenAI System Prompt (GLOBAL)
