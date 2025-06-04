@@ -16,6 +16,12 @@ import models
 from auth import router as auth_router
 
 # -------------------------------
+# Environment-based Settings
+# -------------------------------
+FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:3000").split(",")
+SHOW_DEBUG = os.getenv("ENV", "dev") == "dev"
+
+# -------------------------------
 # Logging & Error Handling
 # -------------------------------
 logging.basicConfig(level=logging.INFO)
@@ -27,9 +33,12 @@ app = FastAPI()
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception: {str(exc)}")
     logger.error(traceback.format_exc())
+    content = {"error": "Internal server error"}
+    if SHOW_DEBUG:
+        content["detail"] = str(exc)
     return JSONResponse(
         status_code=500,
-        content={"error": "Internal server error", "detail": str(exc)}
+        content=content
     )
 
 # -------------------------------
@@ -37,7 +46,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # -------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Lock down in production!
+    allow_origins=FRONTEND_ORIGINS,  # Now uses env var for security!
     allow_methods=["*"],
     allow_headers=["*"],
 )
