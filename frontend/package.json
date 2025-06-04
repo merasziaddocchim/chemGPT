@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/typography": "0.5.9",
     "autoprefixer": "10.4.14",
+    "chart.js": "^4.4.9",
     "framer-motion": "12.12.1",
     "katex": "0.16.9",
     "lucide-react": "^0.511.0",
@@ -19,6 +20,7 @@
     "plotly.js": "^3.0.1",
     "postcss": "8.4.21",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "18.2.0",
     "react-markdown": "8.0.7",
     "react-plotly.js": "^2.6.0",
