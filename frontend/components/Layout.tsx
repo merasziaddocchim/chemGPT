@@ -52,14 +52,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const LogoBlock = () => (
     <span className="text-violet-700 font-extrabold text-2xl tracking-tight flex items-center gap-2 select-none">
       <Image
-        src="/chemgpt-logo.png" // <-- Place your PNG or SVG in /public
+        src="/chemgptlogo.png" // <-- Place your PNG or SVG in /public
         alt="ChemGPT Logo"
         width={32}
         height={32}
         className="inline-block"
         priority
       />
-      ChemGPT
     </span>
   );
 
