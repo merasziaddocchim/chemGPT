@@ -7,13 +7,7 @@ const TopBar: React.FC = () => {
   return (
     <header className="w-full flex items-center justify-between px-4 py-3 bg-white/95 border-b border-gray-100 shadow-sm sticky top-0 z-40">
       <div className="flex items-center gap-2 select-none">
-        <Image
-          src="/chemgptlogo.png"
-          alt="ChemGPT Logo"
-          width={32}
-          height={32}
-          className="w-8 h-8 rounded-full border border-gray-200 bg-white"
-        />
+
         <span className="text-violet-700 font-extrabold text-lg tracking-tight">ChemGPT</span>
       </div>
       <div className="flex items-center gap-2">
