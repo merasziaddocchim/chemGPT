@@ -1,8 +1,8 @@
-// frontend/components/Layout.tsx
 "use client";
 import React, { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
+import Image from "next/image"; // <-- Import Next.js Image
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,18 +19,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
 
-  // This avoids SSR "window is not defined" error:
   useEffect(() => {
     setCurrentPath(window.location.pathname);
   }, []);
 
-  const NavLink = ({ href, icon, label }: { href: string; icon: string; label: string }) => (
+  const NavLink = ({
+    href,
+    icon,
+    label,
+  }: {
+    href: string;
+    icon: string;
+    label: string;
+  }) => (
     <Link href={href} legacyBehavior>
       <a
         className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer text-base font-medium transition
-          ${currentPath === href
-            ? "bg-violet-100 text-violet-700 shadow"
-            : "text-gray-700 hover:bg-violet-50 hover:text-violet-700"
+          ${
+            currentPath === href
+              ? "bg-violet-100 text-violet-700 shadow"
+              : "text-gray-700 hover:bg-violet-50 hover:text-violet-700"
           }`}
         onClick={() => setMobileOpen(false)}
       >
@@ -40,15 +48,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     </Link>
   );
 
+  // Logo block for sidebar
+  const LogoBlock = () => (
+    <span className="text-violet-700 font-extrabold text-2xl tracking-tight flex items-center gap-2 select-none">
+      <Image
+        src="/chemgpt-logo.png" // <-- Place your PNG or SVG in /public
+        alt="ChemGPT Logo"
+        width={32}
+        height={32}
+        className="inline-block"
+        priority
+      />
+      ChemGPT
+    </span>
+  );
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-white via-slate-50 to-white">
       {/* Sidebar (Desktop) */}
       <aside className="hidden md:flex w-60 flex-col bg-white border-r border-gray-200 text-gray-800 py-4 shadow-xl z-10">
         <Link href="/" className="block px-6 pt-2 pb-4 select-none">
-          <span className="text-violet-700 font-extrabold text-2xl tracking-tight flex items-center gap-2">
-            <span className="text-2xl">🧪</span>
-            ChemGPT
-          </span>
+          <LogoBlock />
         </Link>
         <nav className="flex flex-col gap-1 px-2 mt-2">
           {sidebarLinks.map((link) => (
@@ -66,10 +86,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:hidden`}
       >
         <Link href="/" className="block px-6 pb-4 select-none">
-          <span className="text-violet-700 font-extrabold text-2xl tracking-tight flex items-center gap-2">
-            <span className="text-2xl">🧪</span>
-            ChemGPT
-          </span>
+          <LogoBlock />
         </Link>
         {sidebarLinks.map((link) => (
           <NavLink key={link.href} {...link} />
