@@ -84,7 +84,6 @@ export default function HomePage() {
         <header className="sticky top-0 z-50 w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white/90 backdrop-blur">
         <Link href="/" className="flex items-center gap-2">
           <img src="/chemgptlogo.png" alt="ChemGPT Logo" className="h-8 sm:h-10 w-auto" />
-          <span className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">ChemGPT</span>
         </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-base font-medium">
