@@ -2,7 +2,8 @@
 import React, { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
-import Image from "next/image"; // <-- Import Next.js Image
+import Image from "next/image";
+import ScrollToTop from "@/components/ScrollToTop";
 
 interface LayoutProps {
   children: ReactNode;
@@ -52,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const LogoBlock = () => (
     <span className="text-violet-700 font-extrabold text-2xl tracking-tight flex items-center gap-2 select-none">
       <Image
-        src="/chemgptlogo.png" // <-- Place your PNG or SVG in /public
+        src="/chemgptlogo.png"
         alt="ChemGPT Logo"
         width={32}
         height={32}
@@ -120,6 +121,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         {/* Page content */}
         <div className="flex-1 flex flex-col w-full">{children}</div>
+        {/* Scroll to top button, always visible */}
+        <ScrollToTop />
       </main>
     </div>
   );
