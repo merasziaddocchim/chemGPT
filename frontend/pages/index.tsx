@@ -82,9 +82,11 @@ export default function HomePage() {
       <div className="min-h-screen w-full bg-gradient-to-b from-white via-slate-50 to-white text-gray-900 flex flex-col">
         {/* Navbar */}
         <header className="sticky top-0 z-50 w-full py-4 px-4 sm:px-6 flex justify-between items-center border-b border-gray-100 bg-white/90 backdrop-blur">
-          <Link href="/" className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">
-            <span className="mr-1">🧪</span> ChemGPT
-          </Link>
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/chemgptlogo.png" alt="ChemGPT Logo" className="h-8 sm:h-10 w-auto" />
+          <span className="font-extrabold text-xl sm:text-2xl text-violet-700 tracking-tight">ChemGPT</span>
+        </Link>
+
           <nav className="hidden md:flex items-center gap-6 text-base font-medium">
             {/* 
               For smooth scroll:
@@ -150,14 +152,7 @@ export default function HomePage() {
             <span className="px-3 py-1 bg-fuchsia-100 text-fuchsia-700 rounded-full font-semibold text-xs">#ExplainableAI</span>
           </div>
           {/* Trust/As Seen In (placeholder) */}
-          <div className="w-full flex justify-center my-6">
-            <div className="flex gap-6 grayscale opacity-80">
-              {/* Replace src with your own logo images if available */}
-              <img src="/logos/nature.svg" alt="Nature" className="h-7" />
-              <img src="/logos/science.svg" alt="Science" className="h-7" />
-              <img src="/logos/acs.svg" alt="ACS" className="h-7" />
-            </div>
-          </div>
+          
         </section>
 
         <hr className="w-20 mx-auto border-cyan-100 my-8" />
