@@ -1,4 +1,3 @@
-// frontend/components/TopBar.tsx
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -6,8 +5,16 @@ import Image from "next/image";
 const TopBar: React.FC = () => {
   return (
     <header className="w-full flex items-center justify-between px-4 py-3 bg-white/95 border-b border-gray-100 shadow-sm sticky top-0 z-40">
-      <div className="flex items-center gap-2 select-none">
-
+      {/* On mobile, add left margin so ChemGPT text isn't behind menu button */}
+      <div className="flex items-center gap-2 select-none ml-12 md:ml-0">
+        {/* Optional: show logo on mobile */}
+        {/* <Image
+          src="/chemgtplogo.png"
+          alt="ChemGPT Logo"
+          width={28}
+          height={28}
+          className="inline-block"
+        /> */}
         <span className="text-violet-700 font-extrabold text-lg tracking-tight">ChemGPT</span>
       </div>
       <div className="flex items-center gap-2">
